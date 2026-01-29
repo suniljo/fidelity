@@ -1,0 +1,41 @@
+=========================
+Effective final variables 
+=========================
+In Java, an effectively final variable is a local variable or parameter that is never reassigned after its initial assignment, even if it is not explicitly declared with the final keyword. This concept, introduced in Java 8, allows such variables to be used in lambda expressions and anonymous inner classes. 
+
+=== Key Characteristics ===
+1) No final keyword required: The primary difference from an explicitly final variable is the absence of the final modifier.
+
+2) Assigned only once: The compiler verifies that the variable's value or object reference does not change after its initial assignment.
+
+3) Used in Lambdas/Anonymous Inner Classes: This feature was introduced to reduce boilerplate code when using these constructs, which require captured local variables to be immutable. 
+
+
+==== Why the Restriction Exists ===
+
+The requirement for variables to be final or effectively final in lambdas/anonymous classes stems from how Java handles variable capture and memory management.
+ 
+Stack vs. Heap Memory: 
+
+--> Local variables exist on the thread's stack, which has a limited lifespan (it is destroyed when the method returns). 
+--> Lambda expressions, however, can be executed later, potentially by different threads, and live on the heap. 
+
+--> If a lambda could modify a stack variable that no longer exists, it would cause major problems.
+
+--> Immutability Guarantees: Java solves this by "capturing" the value of the local variable at the time the lambda is created, essentially making a copy. Requiring the variable to be final or effectively final ensures that the original variable's value never changes after this capture, eliminating ambiguity and potential concurrency issues. 
+
+
+import java.util.stream.IntStream;
+
+public class EffectivelyFinalDemo {
+    public static void main(String[] args) {
+        int temp = 1; // Effectively final because it is assigned only once
+
+        IntStream.rangeClosed(1, 5).forEach(i -> {
+            System.out.println("Value of temp is = " + temp); // Legal: temp is effectively final
+        });
+
+        // The following line would cause a compilation error, as it reassigns temp
+        // temp = 2; 
+    }
+}

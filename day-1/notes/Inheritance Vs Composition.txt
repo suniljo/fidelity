@@ -1,0 +1,233 @@
+==========================
+Inheritance Vs Composition
+==========================
+Association, Aggregation, Composition
+
+Association in Java is a fundamental object-oriented programming concept that describes a relationship between two separate classes established through their objects
+
+Aggregation in Java is an object-oriented principle that models a "has-a" relationship between two classes, where the contained objects can exist independently of the container object. It is a specific, weakly coupled form of association. 
+Example: Teacher and Course
+Course contains Teacher
+
+
+In Java, composition is a design technique where a class contains an instance of another class as one of its fields, establishing a "has-a" (mainly "part-of") relationship. It is a strong form of association where the existence of the contained object is dependent on the container object's existence (e.g., a car has an engine, and the engine cannot exist without the car). 
+Example: Car and Engine
+
+
+Composition is the strongest form of Association - or is a sub-type of Aggregation
+In Composition - life cycle of one object depends on another object
+
+Composition represents a "has-a" relationship - where one class contains owns objects of another class
+
+Inheritance represents "is-a" relationship - where one class (child) inherits the properties and behaviour of another class (Parent)
+Dog is an Animal
+
+Example:
+
+
+public class PrimeMinister{
+  private Cabinet cabinet;
+  //other methods
+}
+
+public class Cabinet{
+ //methods
+}
+
+PrimeMinister class contains the Cabinet class as a property
+PrimeMinister is the head of Cabinet - whenever the Priminister takes oath Cabinet gets created and same way whenever the PrimeMinister resigns - the Cabinet also gets dissolved automatically
+
+
+Note: Life cycle of Cabinet is dependent on life cycle of Prime Minister
+
+
+class Mobile{
+  String model;
+  int manufactureYear;
+  String brand;
+}
+
+class Person{
+  String name;
+  int age;
+  Mobile mobile;
+}
+
+
+1. Flexibility
+     Composition - offers dynamic behaviour through object composition, enhancing flexibility 
+     Inheritance - can constrain flexibility due to tight coupled class hierarchies
+
+
+2. Code Reuse
+     Composition - promotes modular components for enhanced code re-use
+     Inheritance - facilitates code re-use but may lead to tighter coupling
+
+3. Complexity
+     Composition - fosters simpler, more maintainable code structures
+     Inheritance - can introduce complexity, especially in deep hierarchies 
+
+4. Coupling
+     Composition - encourages looser coupling between classes, promoting encapsulation
+     Inheritance - often results in tighter coupling, potentially reducing flexibility
+
+
+
+
+=== Inheritance ===
+
+1. Inheritance is an object-oriented concept where one class (child) derives the properties and behaviour from another class (parent) using the "extends" keyword
+
+2. It creates an "is-a" relationship, meaning the sub-class is a type of the super-class
+
+3. Inheritance is tightly coupled because changes in the parent class can directly affect the child class
+
+4. It makes code reuse easy but can lead to fragile hierarchies and limits flexibility due to single inheritance
+
+5. Inheritance is best used when there is a clear hierarchical relationship between classes
+
+=== Composition ===
+
+1. Composition is a design principle where one class contains a reference to another class to reuse its functionality, promoting flexibility and modular design
+
+2. Composition creates a "has-a" relationship, meaning one class has another class as a part of its structure
+
+3. Composition is loosely coupled because the internal implementation of the composed class can change without affecting the outer class
+
+4. Composition promotes greater flexibility and reusability since behaviour can be changed at runtime by composing different classes
+
+5. Composition is preferred when building systems that require better maintainability and easier testing by combining behaviours
+
+
+
+
+
+Question: In which scenarios we should use Inheritance over composition?
+
+SCENARIO-1: Hierarchical Relationship
+--> when there is a clear hierarchical relationship between the classes and sub-class is a super class 
+Ex: A Dog is an Animal
+
+class Animal{
+  void sound(){
+    System.out.println("Animal makes a sound");
+  }
+}
+
+class Dog extends Animal{
+  @Override
+  void sound(){
+   System.out.println("Dog barks")
+  }
+}
+
+
+SCENARIO-2: Code Reusability
+--> when code reuse is desired -> as inheritance promotes reusing the functionality already implemented in the super class
+
+
+class Animal{
+  String name;
+
+  public Animal(String name){
+    this.name = name;
+  }
+
+  void eat(){
+    System.out.println(name + " is eating");
+  }
+
+  void sleep(){
+    System.out.println(name + " is sleeping");
+  }
+}
+
+class Dog extends Animal{
+
+  public Dog(String name){
+     super(name);
+  }
+
+  void bark(){
+   System.out.println(name + " is barking")
+  }
+}
+
+
+class Cat extends Animal{
+
+  public Cat(String name){
+     super(name);
+  }
+  
+  void meow(){
+   System.out.println(name + " is meowing")
+  }
+}
+
+class Main{
+  public static void main(String[] args){
+    Dog dog = new Dog("Buddy");
+    Cat cat = new Cat("Whiskers");
+
+    dog.eat();
+    dog.sleep();
+    dog.bark();
+
+    cat.eat();
+    cat.sleep();
+    cat.bark();    
+  }
+}
+
+SCENARIO-3: Polymorphic Behavior
+--> when polymorphic behaviour is required -> allowing super class references to point to sub-class objects and invoke overridden methods dynamically
+
+
+class Animal{
+  String name;
+
+  public Animal(String name){
+    this.name = name;
+  }
+
+  void makeSound(){
+    System.out.println("Animal makes a sound");
+  }
+}
+
+class Dog extends Animal{
+  public Dog(String name){
+     super(name);
+  }
+
+  @Override
+  void sound(){
+   System.out.println(name + " barks")
+  }
+}
+
+
+class Cat extends Animal{
+  public Cat(String name){
+     super(name);
+  }
+
+  @Override
+  void makeSount(){
+   System.out.println(name + " meows")
+  }
+}
+
+
+class Main{
+  public static void main(String[] args){
+    Animal dog = new Dog("Buddy");
+    Animal cat = new Cat("Whiskers");
+
+    dog.makeSound();
+    
+    cat.makeSound();    
+  }
+}
+

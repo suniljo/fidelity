@@ -1,0 +1,167 @@
+=================
+Method References
+=================
+
+Java 8 provides a new feature called method reference.
+
+Method reference is used to refer method of the functional interface. 
+
+It is a compact and easy form of a lambda expression
+
+-> Method Reference is the simplification of Lambda Expression
+
+Pre-requisite : How to write a Lambda Expression
+Lambda corresponds to an interface specifically abstract method present in an interface
+We can write Lambda only for an interface
+
+-> Java 8 method references, a concise way to execute methods within Lambda expressions. 
+
+Syntax:
+  object::method_name 
+
+:: -> segregator
+object -> reference to call that method
+method_name -> method call
+
+
+
+== Example ==
+
+public interface Nums {
+  public void add(int x, int y);
+}
+
+
+public class LambdaTest {
+	public static void main(String[] args) {
+		Nums numsRef = (i, j) -> {
+			int sum = i + j;
+			System.out.println("sum = " + sum);
+		};
+		
+		numsRef.add(10, 20);
+	}
+}
+
+
+//what ever parameters lambda takes and if the same parameters are passed to internal instance method in the same order, same type and same number then method reference can be used
+
+If a lambda expression simply passes all of its arguments directly to an instance method in the exact same order and type, it can be replaced with a method reference.
+
+
+public class MethodReference {
+
+	public static void main(String[] args) {
+		MethodReference refObj = new MethodReference();
+		
+		Nums numsLambda = (i, j) -> {
+			refObj.performAdd(i, j);
+		};		
+		numsLambda.add(10, 20);
+		
+		/*
+		 * If a lambda expression simply passes all of its arguments directly to an instance method 
+		 * in the exact same order and type, it can be replaced with a method reference.
+		 * 
+		 * what ever parameters lambda takes and if the same parameters are passed to internal 
+		 * instance method in the same order, same type and same number then method reference can be used
+		 */
+		
+		//syntax: InterfaceName lamdaExpression = ObjectReference::instance_method_name
+		Nums numsLambda1 = refObj::performAdd;
+		numsLambda1.add(20,12);
+	}
+
+	private void performAdd(int x, int y) {
+		int z = x + y;
+		System.out.println("sum = " + z);
+	}
+}
+
+-- simplification of lambda expression
+-- debug the program for more clarity
+
+
+--- checking error scenario --
+interface TestInterface{
+  public boolean validate(int i, String name);
+}
+
+
+public boolean performValidation(String i, int j){
+   return true;
+}
+
+
+TestInterface t2 = (p, q) -> {
+   refObj.performValidation(q, p);
+}
+
+t2.validate(10, "string");
+
+
+TestInterface t3 = refObj::performValidation --- error as the order is not correct
+t3.validate(10, "String");
+
+
+
+-- Types of Method Reference --
+
+1. Reference to static Method - static method reference
+	ContainingClass::staticMethodName
+
+2. Reference to instance Method of Object type - instance method reference
+ 	containingObject::instanceMethodName
+
+3. Reference to constructor - constructor method reference
+	ClassName::new
+
+
+case-2: convert to static method reference
+
+TestInterface t4 = (p, q) -> {MethodReference.m2(p,q)};
+
+static void m2(int p, String q){}
+
+//InterfaceName lambdaExpression = ClassName::static_method_name
+
+TestInterface t5 = MethodReference::m2
+t5.validate(10, "Sanjay");
+
+
+case-3:  constructor method reference
+//add 2 args constructor
+
+TestInterface t6 = (p, q) -> {
+   MethodReference ref = new MethodReference(p, q); //creating an object
+ }
+
+t6.validate(10, "Sanjay");
+
+TestInterface t7 = MethodReference::new  //calling the constructor
+t7.validate(10, "Sanjay");
+
+
+BiConsumer<Integer, String> p1 = (x,y)->{
+  MethodReference mf = new MethodReference(x, y);
+}
+p1.accept(10, "Hi");
+
+
+case-3:
+interface TestInterface1{
+  void validate(String str);
+}
+
+TestInterface1 ref = h -> System.out.println(h);
+h.validate("Sanjay");
+
+//System.out.println(h) -- implementation for lambda
+
+TestInterface1 ref1 = System.out::println
+ref1.validate("Sanjay");
+
+
+PrintStream pr = System.out;
+TestInterface1 ref1 = pr::println
+pr.println(h);
