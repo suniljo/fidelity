@@ -1,0 +1,52 @@
+a)forEach(Consumer action)
+List<Integer> list = Arrays.asList(10,20,30,40,50);
+list.stream().forEach(System.out::println);
+note: forEach(consumer) is there in List and forEach(BiConsumer) is there in Map
+
+
+b)filter(Predicate p)
+List<Integer> list = Arrays.asList(10,20,30,40,50);
+list.stream().filter(x->x>15).forEach(System.out::println);
+
+
+c)map(Function) changes the values
+list.stream().map(x->x*2).forEach(System.out::println);
+
+d)flatMap(function) which converts List of List to list
+List<Integer> list = Arrays.asList(10,20,30,40,50);
+List<Integer> l1 = Arrays.asList(1,2,3,4,5);
+List<Integer> l2 = Arrays.asList(-1,-2,-3,-4,-5);
+List<List<Integer>> list1 = Arrays.asList(list,l1,l2);
+list1.stream().flatMap(List::stream).collect(Collectors.toList()).forEach(System.out::println);;
+
+e)Sort Elements in a Stream
+The sorted() method sorts the elements of the stream.
+List<Integer> numbers = Arrays.asList(10, -2, 3, 4, 5, 6);
+numbers.stream().sorted().forEach(System.out::println);
+
+
+f)count
+List<Integer> numbers = Arrays.asList(10, -2, 3, 4, 5, 6);
+long count = numbers.stream().filter(x->x<0).count();
+System.out.println(count);
+
+g)Limit the Stream Size
+List<Integer> numbers = Arrays.asList(10, -2, 3, 4, 5, 6);
+numbers.stream().limit(3).forEach(System.out::println);
+
+
+h)Skip Elements in a Stream
+List<Integer> numbers = Arrays.asList(10, -2, 3, 4, 5, 6);
+numbers.stream().skip(3).forEach(System.out::println);
+
+
+i)Find the First Element in a Stream (below program to get max 3rd element)
+List<Integer> numbers = Arrays.asList(10, -2, 3, 4, 5, 6);
+int num = numbers.stream().sorted().skip(2).findFirst().get();
+System.out.println(num);
+
+
+j)Check if Any Match in a Stream
+List<Integer> numbers = Arrays.asList(10, -2, 3, 4, 5, 6);
+boolean result = numbers.stream().anyMatch(x->x==5);
+System.out.println(result);

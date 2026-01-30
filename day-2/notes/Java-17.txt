@@ -1,0 +1,181 @@
+============
+ Records
+============
+
+-> In Java, a record is a special type of class declaration aimed at reducing the boilerplate code. 
+-> Record was introduced in Java SE 16
+-> Java records are specialized, immutable data-carrier classes introduced in Java 16 to reduce boilerplate for modeling data-only objects
+-> Java records do not have setter methods because they are designed to be immutable data carriers
+
+Why No Setters?
+-> Immutability: The core principle of a Java record is that its state is fixed upon creation. This makes records thread-safe and predictable
+-> Data Integrity: By preventing modification of fields, records offer greater control over data integrity, as the state cannot be accidentally altered in other parts of the program
+
+
+public record Employee(int id, String firstName, String lastName) {}
+
+Employee e1 = new Employee(1001, "Sanjay", "Patil");
+
+// Auto generated getter methods
+System.out.println(e1.id() + " " + e1.firstName() + " " + e1.lastName());
+
+// Auto-generated toString() method
+System.out.println(e1.toString());
+System.out.println(e1);
+
+https://www.geeksforgeeks.org/what-are-java-records-and-how-to-use-them-alongside-constructors-and-methods/
+
+https://www.digitalocean.com/community/tutorials/java-records-class
+
+
+
+
+===========
+Text Blocks
+===========
+
+public class TextBlockTest{
+  public static void main(String[] args){
+    String text = TextBlockTest.getString();
+    System.out.println(text);
+  }
+
+  private static String getString(){
+    return "This is text \n" 
+	 + "in multiple line \n"
+         + "before Java 17";
+  }
+}
+
+
+// use of Text Block from Java 17
+
+	  private static String getString(){
+		  return """
+				  This is a text block
+				  from a method using 
+				  Java 17 text block feature
+		  		""";
+	  }
+
+
+// no \n and no concatenation operator
+
+
+=========================
+Enhanced Switch Statement
+=========================
+
+From Java 17 - a switch statement can return a value and multiple labels can be added for a switch case and colon (:) and break is avoided with arrow_token (->)
+
+
+public class EnhancedSwitchTest {
+
+	public static void main(String[] args) {
+		char ch = 'A';
+		String result = getResult(ch);
+		System.out.println(result);
+		
+		System.out.println(getResult('M'));
+	}
+	
+	private static String getResult(char ch) {
+		return switch(ch) {
+			case 'A','E','I','O','U','a','e','i','o','u' -> "vowel";
+			default -> "consonant";
+		};
+	}
+}
+
+
+-> Pattern-matching switch improves - Syntax & type-checking
+
+Pattern matching for the switch statement and expression, a permanent feature since Java 21 (openjdk.org JEP 441), allows an expression to be tested against a number of patterns (types, record components, and when conditions) rather than just constant values
+
+Pattern matching in switch enhances expressiveness and safety, largely replacing chains of if-else if-else statements for type checking
+
+======================
+Sealed Classes in Java
+======================
+Sealed classes, a feature finalized in Java 17, restrict which other classes can extend or implement them, providing fine-grained control over inheritance hierarchies
+
+sealed Modifier: Used on the declaration of a class or interface to mark it as sealed.
+permits Clause: Specifies the allowed direct subclasses or sub-interfaces.
+
+Subclass Modifiers: Every permitted subclass must be declared with one of the following modifiers:
+
+    final: The subclass cannot be extended further (e.g., Circle in the example below).
+    sealed: The subclass can be extended, but only by its own specified permitted subclasses (e.g., Rectangle below).
+    non-sealed: The subclass is open for extension by any other class, breaking the sealing hierarchy at that point 
+
+
+
+// Shape.java
+public abstract sealed class Shape permits Circle, Rectangle, Square {
+    public abstract double area();
+}
+
+// Circle.java (final - cannot be extended)
+public final class Circle extends Shape {
+    private final double radius;
+    public Circle(double radius) { this.radius = radius; }
+    @Override
+    public double area() { return Math.PI * radius * radius; }
+}
+
+// Rectangle.java (sealed - can only be extended by its own permits)
+public sealed class Rectangle extends Shape permits FilledRectangle { // A further sealed class
+    private final double width;
+    private final double height;
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+    @Override
+    public double area() { return width * height; }
+}
+
+// Square.java (non-sealed - open for any further extension)
+public non-sealed class Square extends Shape {
+    private final double side;
+    public Square(double side) { this.side = side; }
+    @Override
+    public double area() { return side * side; }
+}
+
+
+
+sealed class Vehicle permits Car, Bike {}
+final class Car extends Vehicle {}
+final class Bike extends Vehicle {}
+
+Vehicle v = new Car();
+System.out.println(v.getClass().getSimpleName());
+
+===============================
+Immutable Collection in Java 17
+===============================
+In Java 17, immutable collections are primarily created using static factory methods and Stream collectors. 
+These collections are structurally immutable: they cannot be modified after creation, and attempts to do so result in an UnsupportedOperationException
+
+1. Static Factory Methods (List.of, Set.of, Map.of)
+Introduced in Java 9, these are the standard way to create small, fixed immutable collections. 
+
+    List: List<String> list = List.of("A", "B", "C");
+    Set: Set<Integer> set = Set.of(1, 2, 3);
+    Map: Map<Integer, String> map = Map.of(1, "One", 2, "Two"); (Supports up to 10 key-value pairs; use Map.ofEntries for more)
+
+
+2. Copying Existing Collections (copyOf)
+Java 10 added copyOf methods to create an immutable copy of an existing collection. 
+
+    Example: List<String> immutableList = List.copyOf(existingMutableList);
+    Note: If the input is already an immutable collection of the same type, it may return the same instance rather than making a new copy.
+
+
+3. Stream API Collectors (toUnmodifiable)
+When processing data with Streams, you can collect directly into immutable structures. 
+
+    List: list.stream().filter(s -> s.startsWith("A")).collect(Collectors.toUnmodifiableList());
+    Set: set.stream().collect(Collectors.toUnmodifiableSet());
+    Map: map.entrySet().stream().collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));

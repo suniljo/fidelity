@@ -1,0 +1,110 @@
+==========================
+map() Vs flatMap() Methods
+==========================
+
+-> Java 8 stream API provides map() and flatMap() method
+-> Both these methods are intermediate methods and returns another stream as part of the output
+
+-> map() method is used for data transformation
+-> flatMap() method is used for data transformation and data flattering
+
+ flatMap() = map() + flattering
+
+ 
+-> map() method is for Data Transformation
+  map() takes Stream<T> as input and return Stream<R>
+
+	Stream<R> map(Stream<T> input){}
+
+-> mapper function produces single value for each input value - hence it is also called a One-To-One mapping
+
+ 
+
+-> flatMap() method -> map() + flattering
+  flatMap() takes Stream<Stream<T>> as input and returns Stream<R>
+
+  Stream<R> map(Stream<Stream <T input>>){}
+
+-> this mapper function produces multiple value for each input value - hence it is also called as One-To-Manny mapping
+
+
+Code: Data Transformation and Flattering
+
+Stream.of("a", "b", "c", "d"); --> transform data from lowercase to upper case [A, B, C , D]  ---> transformation
+
+[{1,2}, {3,4}, {5,6}, {7, 8}] --> [1,2,3,4,5,6,7,8] ---> converting stream of stream data into a single stream is called as data flattering
+
+
+Differences between Java 8 Map() Vs flatMap() :
+
+map() | flatMap() | 
+--- | --- |  
+It processes stream of values. | It processes stream of stream of values. 
+It does only mapping. | It performs mapping as well as flattening.
+It's mapper function produces single value for each input value. | It's mapper function produces multiple values for each input value. 
+It is a One-To-One mapping. | It is a One-To-Many mapping. 
+Data Transformation : From Stream<T> to Stream<R> | Data Transformation : From Stream<Stream<T> to Stream<R> 
+Use this method when the mapper function is producing a single value for each input value. | Use this method when the mapper function is producing multiple values for each input value. 
+
+
+Example
+
+--- Customer.java ---
+
+public class Customer {
+    private int id;
+    private String name;
+    private String email;
+    private List<String> phoneNumbers;
+
+--EkartDatabase.java --
+public class EkartDataBase {
+
+
+    public static List<Customer> getAll() {
+        return Stream.of(
+                new Customer(101, "john", "john@gmail.com", Arrays.asList("397937955", "21654725")),
+                new Customer(102, "smith", "smith@gmail.com", Arrays.asList("89563865", "2487238947")),
+                new Customer(103, "peter", "peter@gmail.com", Arrays.asList("38946328654", "3286487236")),
+                new Customer(104, "kely", "kely@gmail.com", Arrays.asList("389246829364", "948609467"))
+        ).collect(Collectors.toList());
+    }
+
+
+}
+
+
+--MapVsFlatMap.java --
+
+public class MapVsFlatMap {
+    public static void main(String[] args) {
+
+        List<Customer> customers = EkartDataBase.getAll();
+
+        //List<Customer>  convert List<String> -> Data Transformation
+        //mapping : customer -> customer.getEmail()
+        //customer -> customer.getEmail()  one to one mapping
+        List<String> emails = customers.stream()
+                .map(customer -> customer.getEmail())
+                .collect(Collectors.toList());
+        System.out.println(emails);
+
+
+        //customer -> customer.getPhoneNumbers()  ->> one to many mapping
+        List<List<String>> phoneNumbers = customers.
+                stream().map(customer -> customer.getPhoneNumbers())
+                .collect(Collectors.toList());
+        System.out.println(phoneNumbers);
+
+
+        //List<Customer>  convert List<String> -> Data Transformation
+        //mapping : customer -> phone Numbers
+        //customer -> customer.getPhoneNumbers()  ->> one to many mapping
+        List<String> phones = customers.stream()
+                .flatMap(customer -> customer.getPhoneNumbers().stream())
+                .collect(Collectors.toList());
+
+        System.out.println(phones);
+    }
+}
+
