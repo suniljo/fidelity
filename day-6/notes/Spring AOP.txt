@@ -1,0 +1,211 @@
+AOP
+===
+Aspect Oriented Programming (AOP) compliments OOPs in the sense that it also provides modularity. But the key unit of modularity is aspect than class.
+
+AOP breaks the program logic into distinct parts (called concerns). It is used to increase modularity by cross-cutting concerns.
+
+A cross-cutting concern is a concern that can affect the whole application and should be centralized in one location in code as possible, such as transaction management, authentication, logging, security, auditing etc.
+
+Why use AOP?
+
+It provides the pluggable way to dynamically add the additional concern before, after or around the actual logic. Suppose there are 10 methods in a class as given below:
+	
+    class BusinessService{  
+    	public void m1(){...}  
+   	public void m2(){...}  
+   	public void m3(){...}  
+   	
+   	 public void n1(){...}  
+  	 public void n2(){...}  
+
+  	public void p1(){...}  
+  	public void p2(){...}  
+   	public void p3(){...}  
+    }  
+There are 3 methods that starts with "m", 2 methods that starts with "n" and 3 methods that starts with "p".
+
+Understanding Scenario :: I have to maintain log and send notification after calling methods that starts from "m".
+
+Problem without AOP :: We can call methods (that maintains log and sends notification) from the methods starting with m. In such scenario, we need to write the code in all the 3 methods.
+
+But, if client says in future, I don't have to send notification, you need to change all the methods. It leads to the maintenance problem.
+
+Solution with AOP :: We don't have to call methods from the method. Now we can define the additional concern like maintaining log, sending notification etc. not in the method of a class. It has to be maintained by spring container (by mentioning in spring configuration file or by using @Aspect)
+
+In future, if client says to remove the notifier functionality, we need to change only in the xml file. So, maintenance is easy in AOP.
+
+Where use AOP?
+
+AOP is mostly used in following cases:
+
+    - to provide declarative enterprise services such as declarative transaction management.
+    - It allows users to implement custom aspects.
+
+
+A layered approach is typically used to build applications:
+ -> Web Layer - View logic for web apps OR JSON conversion for REST API
+ -> Business Layer/ Service Layer - Business Logic
+ -> Repository Layer/ Data Layer - Persistence Logic
+
+Each layer has different responsibilities
+ HOWEVER, there are a few common aspects that apply to all layers like
+  Security,   Performance,   Logging etc    
+These common aspects are called Cross Cutting Concerns
+Aspect Oriented Programming can be used to implement Cross Cutting Concerns
+
+
+TWO Popular AOP Frameworks
+ a) Spring AOP
+	NOT a complete AOP solution BUT very popular
+	Only works with Spring Beans
+	Example: Intercept method calls to Spring Beans
+
+ b) AspectJ
+	Complete AOP solution BUT rarely used
+	Example: Intercept any method call on any Java class
+	Example: Intercept change of values in a field
+
+
+
+AOP Terminology
+---------------
+1) Aspect -> a modularization of a concern that cuts across multiple classes. Transaction management is a good example of a crosscutting concern in J2EE applications. In Spring AOP, aspects are implemented using regular classes (the schema-based approach) or regular classes annotated with the @Aspect annotation (the @AspectJ style))
+
+Aspect is crosscutting concern. One aspect can lie in multiple objects.
+
+2) Join point: Join point is a point that represents the execution of a method.
+it represents where secondary logic should integrate with the primary logic
+Spring AOP supports method level joinpoint.
+When pointcut condition is true, the advice is executed. A specific execution instance of an advice is called a Join Point.
+
+At run time, the point at which, when the conditions are met i.e. when the Pointcut is met & advice is being executed, it is referred to as JoinPoints.
+
+3) Advice: Advice is an action taken by aspect. (when & what). 
+           -> action taken by an aspect at a particular join point. Different types of advice include "around," "before" and "after" advice. Many AOP frameworks, including Spring, model an advice as an interceptor, maintaining a chain of interceptors around the join point.
+
+4) Pointcut: what are the method calls that need to be intercepted.
+it represents for which business methods secondary logic should be applied. 
+Advice is nothing but, what are the action that needs to be done when a Pointcut is met.
+A scenario which matches to join point.
+
+5) Weaving : the process of combining Target and Aspect is called as Weaving. Weaver is the framework that implements AOP, AspectJ or Spring AOP Runtime
+-> linking aspects with other application types or objects to create an advised object. This can be done at compile time (using the AspectJ compiler, for example), load time, or at runtime. Spring AOP, like other pure Java AOP frameworks, performs weaving at runtime.
+
+
+6) Proxy : an object created by the AOP framework in order to implement the aspect contracts (advise method executions and so on). In the Spring Framework, an AOP proxy will be a JDK dynamic proxy or a CGLIB proxy.
+
+
+
+AOP Implementations
+-------------------
+AOP implementations are provided by:
+
+> AspectJ
+> Spring AOP
+> JBoss AOP
+
+
+Spring AOP Example
+------------------
+4 types of advices supported in spring
+
+> Before Advice - it is executed before the actual method call.
+> After Advice - it is executed after the actual method call. If method returns a value, it is executed after returning value.
+> Around Advice - it is executed before and after the actual method call.
+> Throws Advice - it is executed if actual method throws exception.
+
+
+
+AOP Terminology
+
+1) Aspect: Aspect is crosscutting concern. One aspect can lie in multiple objects.
+
+2) Join point: Join point is a point that represents the execution of a method.
+
+3) Advice: Advice is an action taken by aspect. (when & what)
+
+4) Pointcut: A scenario which matches to join point.
+
+5) Target object: If an object is advised by more than one aspect, that object is called target object. This is also referred as advised object.
+
+6) Weaving: Linking aspects to other application objects to create an advised object. 
+
+
+
+
+    @Aspect declares the class as aspect.
+    @Pointcut declares the pointcut expression.
+
+The annotations used to create advices are given below:
+
+    @Before declares the before advice. It is applied before calling the actual method.
+    @After declares the after advice. It is applied after calling the actual method and before returning result.
+    @AfterReturning declares the after returning advice. It is applied after calling the actual method and before returning result. But you can get the result value in the advice.
+    @Around declares the around advice. It is applied before and after calling the actual method.
+    @AfterThrowing declares the throws advice. It is applied if actual method throws exception.
+
+
+
+Pointcut is an expression language of Spring AOP.
+
+The @Pointcut annotation is used to define the pointcut. We can refer the pointcut expression by name also. 
+
+    @Pointcut("execution(* Operation.*(..))")  
+    private void doSomething() {}  
+
+The name of the pointcut expression is doSomething(). It will be applied on all the methods of Operation class regardless of return type
+
+
+    @Pointcut("execution(public * *(..))")  
+
+It will be applied on all the public methods.
+
+    @Pointcut("execution(public Operation.*(..))")  
+
+It will be applied on all the public methods of Operation class.
+
+    @Pointcut("execution(* Operation.*(..))")  
+
+It will be applied on all the methods of Operation class.
+
+    @Pointcut("execution(public Employee.set*(..))")  
+
+It will be applied on all the public setter methods of Employee class.
+
+    @Pointcut("execution(int Operation.*(..))")  
+
+It will be applied on all the methods of Operation class that returns int value
+
+
+
+package com.fidelity.rest.aspect;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Aspect
+@Component
+@Slf4j
+public class LoggingAspect {
+	// Pointcut expression to match all methods of all classes in the com.fidelity.rest.services package
+	@Before("execution(* com.fidelity.rest.services.*.*(..))")
+	public void logBeforeMethodExecution(JoinPoint joinPoint) {
+		String methodName = joinPoint.getSignature().getName();
+		System.out.println("LOGGING ASPECT: Before executing method: " + methodName);
+		log.info("LOGGING ASPECT: Before executing method: {}", methodName);
+	}
+}
+
+
+---- application.properties ----
+logging.level.root=warn
+logging.level.org.springframework.web=warn
+logging.level.org.hibernate=error
+logging.level.com.fidelity=info
+
+logging.file.name=./logs/app.log
+

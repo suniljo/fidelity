@@ -1,0 +1,10 @@
+2026-02-05T16:38:52.328+05:30  INFO 18144 --- [07.sb-get-request] [restartedMain] com.fidelity.rest.Application            : Starting Application using Java 17.0.0.1 with PID 18144 (D:\Fidelity\day-6\11.library-app-aop\target\classes started by Sunil Joseph in D:\Fidelity\day-6\11.library-app-aop)
+2026-02-05T16:38:52.331+05:30  INFO 18144 --- [07.sb-get-request] [restartedMain] com.fidelity.rest.Application            : No active profile set, falling back to 1 default profile: "default"
+2026-02-05T16:38:54.710+05:30  WARN 18144 --- [07.sb-get-request] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-05T16:38:55.090+05:30  INFO 18144 --- [07.sb-get-request] [restartedMain] com.fidelity.rest.Application            : Started Application in 3.082 seconds (process running for 3.608)
+2026-02-05T16:39:30.938+05:30  INFO 18144 --- [07.sb-get-request] [http-nio-8080-exec-4] com.fidelity.rest.aspect.LoggingAspect   : LOGGING ASPECT: Before executing method: findAll
+2026-02-05T16:39:35.427+05:30  INFO 18144 --- [07.sb-get-request] [http-nio-8080-exec-2] com.fidelity.rest.aspect.LoggingAspect   : LOGGING ASPECT: Before executing method: findAll
+2026-02-05T16:39:39.705+05:30  INFO 18144 --- [07.sb-get-request] [http-nio-8080-exec-3] com.fidelity.rest.aspect.LoggingAspect   : LOGGING ASPECT: Before executing method: findAll
+2026-02-05T16:41:05.315+05:30  INFO 18144 --- [07.sb-get-request] [http-nio-8080-exec-9] com.fidelity.rest.aspect.LoggingAspect   : LOGGING ASPECT: Before executing method: saveBook
+2026-02-05T16:41:49.666+05:30  INFO 18144 --- [07.sb-get-request] [http-nio-8080-exec-8] com.fidelity.rest.aspect.LoggingAspect   : LOGGING ASPECT: Before executing method: saveBook
+2026-02-05T16:42:04.666+05:30  INFO 18144 --- [07.sb-get-request] [http-nio-8080-exec-1] com.fidelity.rest.aspect.LoggingAspect   : LOGGING ASPECT: Before executing method: saveBook

@@ -1,0 +1,9 @@
+2026-02-05T15:34:21.568+05:30  INFO 16792 --- [03.sb-data-sorting] [main] com.fidelity.data.Application            : Starting Application using Java 17.0.0.1 with PID 16792 (D:\Fidelity\day-6\04.sb-data-pagination\target\classes started by Sunil Joseph in D:\Fidelity\day-6\04.sb-data-pagination)
+2026-02-05T15:34:21.570+05:30  INFO 16792 --- [03.sb-data-sorting] [main] com.fidelity.data.Application            : No active profile set, falling back to 1 default profile: "default"
+2026-02-05T15:34:23.277+05:30  INFO 16792 --- [03.sb-data-sorting] [main] com.fidelity.data.Application            : Application initalization
+2026-02-05T15:34:23.356+05:30  INFO 16792 --- [03.sb-data-sorting] [main] com.fidelity.data.Application            : Started Application in 2.082 seconds (process running for 2.494)
+2026-02-05T15:34:23.644+05:30  INFO 16792 --- [03.sb-data-sorting] [main] com.fidelity.data.Application            : printing page: 1 of 4
+2026-02-05T15:34:23.651+05:30  INFO 16792 --- [03.sb-data-sorting] [main] com.fidelity.data.Application            : printing page: 2 of 4
+2026-02-05T15:34:23.658+05:30  INFO 16792 --- [03.sb-data-sorting] [main] com.fidelity.data.Application            : printing page: 3 of 4
+2026-02-05T15:34:23.664+05:30  INFO 16792 --- [03.sb-data-sorting] [main] com.fidelity.data.Application            : printing page: 4 of 4
+2026-02-05T15:34:23.665+05:30  INFO 16792 --- [03.sb-data-sorting] [main] com.fidelity.data.Application            : Spring Container Initialized - Money Transfer Application

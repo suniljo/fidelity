@@ -1,0 +1,568 @@
+Object Relational Mapping with Spring Boot
+==========================================
+-> how to work with relationships between entities in Spring Data
+
+1) One-to-One Relationship
+2) One-to-Many Relationship
+3) Many-to-Many Relationship
+
+Spring Boot is built on the top of the spring and contains all the features of spring.
+ 
+Spring also provides JPA and hibernate to increase the data manipulation efficiency between the spring application and the database. 
+
+In very simple terms we can say JPA (Java persistence API) is like an interface and the hibernate is the implementation of the methods of the interface- like how insertion will be down is already defined with the help of hibernate.
+
+
+Fetch Types in Hibernate
+------------------------
+EAGER - Load the associated data of the other entity, before-hand which is bit costly.
+LAZY - Load the associated data of the other entity, only when requested. This is done on demand.
+
+Example: If we have a relationship between university and student, when university data is fetched, we don't want to fetch students. Because, one university will have thousands of students in the students array in the mapping. It will be a very costly operation. So, we can tell hibernate to keep it with LAZY initialization.
+
+
+Cascading in Hibernate - 
+----------------------
+Cascading in Hibernate refers to the automatic persistence of related entities. 
+When a change is made to an entity, such as an update or deletion, the changes can be cascaded to related entities as well. 
+Cascading in JPA coordinates actions between interconnected entities
+
+For example, if you have a Customer entity that has a one-to-many relationship with an Order entity, you can define cascading to specify that when a Customer is deleted, all of their orders should be deleted as well.
+
+When a change is made to an entity, such as an update or deletion, the changes can be cascaded to related entities as well. Cascading can be configured using annotations, such as @OneToMany(cascade = CascadeType.ALL), or through XML configuration files. It is important to use cascading carefully, as it can lead to unwanted changes being made to related entities if not configured properly.
+
+Hibernate provides several types of cascade options that can be used to manage the relationships between entities.
+
+Here are the different cascade types in Hibernate:
+
+-> CascadeType.ALL
+-> CascadeType.PERSIST
+-> CascadeType.MERGE
+-> CascadeType.REMOVE
+-> CascadeType.REFRESH
+-> CascadeType.DETACH
+-> CascadeType.REPLICATE
+-> CascadeType.SAVE_UPDATE
+
+CascadeType.PERSIST : Both save() or persist() operations cascade to related entities.
+CascadeType.MERGE : Related entities are merged when the ownership entity is merged.
+CascadeType.REFRESH : Does same thing for the refresh() operation.
+CascadeType.REMOVE : Removes all related entities association with this setting when the ownership entity is deleted.
+CascadeType.DETACH : Detaches all related entities if a "manual detach" occurs.
+CascadeType.ALL : All of the above cascade operations.
+
+There is NO DEFAULT CASCADE TYPE in JPA. By default, no operation is cascaded. If we want, we can use several cascade types at once also.
+
+cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH }
+
+
+1. CascadeType.ALL  --> is a cascading type in Hibernate that specifies that all state transitions (create, update, delete, and refresh) should be cascaded from the parent entity to the child entities. This means that if you persist, update, or delete a parent entity, all child entities associated with it will also be persisted, updated, or deleted accordingly.
+
+@OneToMany(mappedBy="customer", cascade=CascadeType.ALL) 
+private Set<Order> orders;
+
+This code defines a one-to-many relationship between a Customer entity and an Order entity and specifies that all state transitions should be cascaded to the associated orders. This means that when a Customer entity is saved, updated, or deleted, all of its associated Order entities will also be saved, updated, or deleted accordingly.
+
+2. CascadeType.PERSIST --> is a cascading type in Hibernate that specifies that the create (or persist) operation should be cascaded from the parent entity to the child entities.
+For example, consider a scenario where you have a Customer entity with a one-to-many relationship to Order entities. By using CascadeType.PERSIST, any new Order entities associated with a Customer entity will be persisted when the Customer entity is persisted. However, if you update or delete a Customer entity, any associated Order entities will NOT be automatically updated or deleted
+
+
+@OneToMany(mappedBy="customer", cascade=CascadeType.PERSIST) 
+private Set<Order> orders;
+
+This code defines a one-to-many relationship between a Customer entity and an Order entity and specifies that the persistent operation should be cascaded to the associated orders. This means that when a Customer entity is persisted, any new Order entities associated with it will also be persisted automatically. However, updates or deletions made to the Customer entity will not be cascaded to the associated Order entities.
+
+CascadeType.MERGE --> is a cascading type in Hibernate that specifies that the update (or merge) operation should be cascaded from the parent entity to the child entities.
+
+When CascadeType.MERGE is used, any changes made to a detached parent entity (i.e., an entity that is not currently managed by the persistence context) will be automatically merged with its associated child entities when the parent entity is merged back into the persistence context. However, new child entities that are not already associated with the parent entity will not be automatically persisted.
+For example, consider a scenario where you have a Customer entity with a one-to-many relationship to Order entities. By using CascadeType.MERGE, any changes made to a detached Customer entity (such as changes made in a different session or transaction) will be automatically merged with its associated Order entities when the Customer entity is merged back into the persistence context.
+
+
+@OneToMany(mappedBy="customer", cascade=CascadeType.MERGE) 
+private Set<Order> orders;
+
+This code defines a one-to-many relationship between a Customer entity and an Order entity and specifies that the merge operation should be cascaded to the associated orders. This means that when a detached Customer entity is merged back into the persistence context, any changes made to the Customer entity will be automatically merged with its associated Order entities. However, new Order entities that are not already associated with the Customer entity will not be automatically persisted.
+
+4. CascadeType.REMOVE --> is a cascading type in Hibernate that specifies that the delete operation should be cascaded from the parent entity to the child entities.
+
+When CascadeType.REMOVE is used, any child entities associated with a parent entity will be automatically deleted when the parent entity is deleted. However, updates or modifications made to the parent entity will not be cascaded to the child entities.
+
+For example, consider a scenario where you have a Customer entity with a one-to-many relationship to Order entities. By using CascadeType.REMOVE, any Order entities associated with a Customer entity will be automatically deleted when the Customer entity is deleted.
+
+
+@OneToMany(mappedBy="customer", cascade=CascadeType.REMOVE) 
+private Set<Order> orders;
+
+This code defines a one-to-many relationship between a Customer entity and an Order entity and specifies that the remove operation should be cascaded to the associated orders. This means that when a Customer entity is deleted, any associated Order entities will also be deleted automatically. However, updates or modifications made to the Customer entity will not be cascaded to the associated Order entities.
+
+5. CascadeType.REFRESH --> is a cascading type in Hibernate that specifies that the refresh operation should be cascaded from the parent entity to the child entities.
+
+When CascadeType.REFRESH is used, any child entities associated with a parent entity will be automatically refreshed when the parent entity is refreshed. This means that the latest state of the child entities will be loaded from the database and any changes made to the child entities will be discarded.
+
+For example, consider a scenario where you have a Customer entity with a one-to-many relationship to Order entities. By using CascadeType.REFRESH, any associated Order entities will be automatically refreshed when the Customer entity is refreshed.
+
+
+@OneToMany(mappedBy="customer", cascade=CascadeType.REFRESH) 
+private Set<Order> orders;
+
+This code defines a one-to-many relationship between a Customer entity and an Order entity and specifies that the refresh operation should be cascaded to the associated orders. This means that when a Customer entity is refreshed, any associated Order entities will also be refreshed automatically. Any changes made to the Order entities will be discarded, and the latest state of the Order entities will be loaded from the database.
+
+6. CascadeType.DETACH --> is a cascading type in Hibernate that specifies that the detach operation should be cascaded from the parent entity to the child entities.
+
+When CascadeType.DETACH is used, any child entities associated with a parent entity will be automatically detached when the parent entity is detached. This means that the child entities will become detached from the persistence context and their state will no longer be managed by Hibernate.
+
+For example, consider a scenario where you have a Customer entity with a one-to-many relationship to Order entities. By using CascadeType.DETACH, any associated Order entities will be automatically detached when the Customer entity is detached.
+
+
+@OneToMany(mappedBy="customer", cascade=CascadeType.DETACH) 
+private Set<Order> orders;
+
+7. CascadeType.REPLICATE -->  is a cascading type in Hibernate that specifies that the replicate operation should be cascaded from the parent entity to the child entities.
+
+For example, consider a scenario where you have a Customer entity with a one-to-many relationship to Order entities. By using CascadeType.REPLICATE, any associated Order entities will be automatically replicated when the Customer entity is replicated.
+
+
+@OneToMany(mappedBy="customer", cascade=CascadeType.REPLICATE) 
+private Set<Order> orders;
+
+This code defines a one-to-many relationship between a Customer entity and an Order entity and specifies that the replicate operation should be cascaded to the associated orders. This means that when a Customer entity is replicated, new Order entities will be created and persisted in the database with the same state as the original Order entities. However, any changes made to the original Order entities after the replication operation will not be replicated to the new Order entities.
+
+
+8. CascadeType.SAVE_UPDATE --> is a cascading type in Hibernate that specifies that the save or update operation should be cascaded from the parent entity to the child entities.
+
+For example, consider a scenario where you have a Customer entity with a one-to-many relationship to Order entities. By using CascadeType.SAVE_UPDATE, any associated Order entities will be automatically saved or updated when the Customer entity is saved or updated.
+
+
+@OneToMany(mappedBy="customer", cascade=CascadeType.SAVE_UPDATE) 
+private Set<Order> orders;
+
+
+-------------------- PRACTICALS ---> One-To-One Mapping ------------
+
+Usecase : relationship between Employee and Address
+An Employee should have an Address
+Two Employees should not have the same Address
+
+In a one to one mapping, both entities are tightly coupled. 
+After the Employee is removed, we cannot use his/her Address. So we should define CascadeType as ALL(If you want to keep the Address, change it to PERSIST). Then address won't be deleted even we delete the Employee. 
+Since Hibernate decides FetchType for one to one mapping is EAGER by default
+
+Normally we record child entity primary key as the foreign key of the owner entity. So Employee should have a column in the table to record the address ID. We will give its name as "ADDRESS_ID" and its referenced by "ID" column in Address entity.
+
+------ application.properties --------
+# Datasource properties
+spring.datasource.url=jdbc:mysql://localhost:3306/db_fidelity
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# ORM Properties
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.hibernate.ddl-auto=update
+
+------ Employee.java ------
+package com.fidelity.mappings.oto.entity;
+@Entity
+@Data
+public class Employee {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String employeeName;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "address_id")
+	private Address employeeAddress;
+}
+
+------ Address.java --------
+package com.fidelity.mappings.oto.entity;
+@Entity
+@Data
+public class Address {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String street;
+	private String city;
+	private String state;
+}
+
+------- EmployeeRepository.java -----------
+package com.fidelity.mappings.oto.repositories;
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {}
+
+------- AddressRepository.java ------------
+package com.fidelity.mappings.oto.repositories;
+public interface AddressRepository extends JpaRepository<Address, Long> {}
+
+------- EmployeeAddressService ------------
+package com.fidelity.mappings.oto.services;
+@Service
+public class EmployeeAddressServices {
+	@Autowired
+	private EmployeeRepository employeeRepo;
+	
+	public void saveEmployeeAddress(Employee emp) {
+		employeeRepo.save(emp);
+	}
+
+}
+
+------- Application.java -------------
+@SpringBootApplication
+public class Application {	
+	private EmployeeRepository employeeRepo;
+	private AddressRepository addressRepo;
+	
+	
+	public SbDataOtoApplication(EmployeeRepository employeeRep, AddressRepository addressRepo) {
+		super();
+		this.employeeRepo = employeeRep;
+		this.addressRepo = addressRepo;
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(SbDataOtoApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		Address addr = new Address();
+		addr.setStreet("Gachibowli");
+		addr.setCity("Hyderabad");
+		addr.setState("Telangana");
+		
+		Employee emp = new Employee();
+		emp.setEmployeeName("Sanjay Patil");
+		emp.setEmployeeAddress(addr);
+		
+		employeeRepo.save(emp);
+		
+		Optional<Employee> optEmp = employeeRepo.findById(1);
+		boolean isPresent = optEmp.isPresent();
+		if(isPresent) {
+			emp = optEmp.get();
+			System.out.println(emp.getEmployeeId() + " - " + emp.getEmployeeName());
+			System.out.println(emp.getEmployeeAddress().getAdddressId()+" - "+ emp.getEmployeeAddress().getStreet());
+			
+			System.out.println(emp);
+		}
+		
+		employeeRepo.deleteById(1);
+	}
+}
+
+----------- PRACTICALS # 2 -----------------------------
+Person & Passport
+
+package com.fidelity.mappings.oto.entity;
+@Entity
+@Data
+public class Person {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer personId;
+
+	private String personName;
+
+	private String personGender;
+
+	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
+	private Passport passport;
+}
+
+
+package com.fidelity.mappings.oto.entity;
+@Entity
+@Data
+public class Passport {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer passportId;
+
+	private String passPortNum;
+
+	private LocalDate issuedDate;
+
+	private LocalDate expDate;
+	
+	@OneToOne
+	@JoinColumn(name = "person_id")
+	private Person person;
+}
+
+
+PassportRepository & PersonRepository
+
+package com.fidelity.mappings.oto.services;
+@Service
+public class PersonServices {
+	@Autowired
+	private PersonRepository personRepo;
+	@Autowired
+	private PassportRepository passportRepo;
+	
+	public void saveData() {
+
+		Person person = new Person();
+		person.setPersonName("Praveen Kumar");
+		person.setPersonGender("Male");
+
+		Passport passport = new Passport();
+		passport.setPassPortNum("RS12387");
+		passport.setIssuedDate(LocalDate.now());
+		passport.setExpDate(LocalDate.now().plusYears(10));
+
+		person.setPassport(passport);
+		passport.setPerson(person);
+
+		personRepo.save(person);
+
+	}
+	
+	public void deleteById(int id) {
+		personRepo.deleteById(id);
+	}
+	
+	public void searchByPassPortId(int id) {
+		Passport pass = passportRepo.findById(id).get();
+		System.out.println(pass.getPassPortNum());
+	}
+}
+
+@SpringBootApplication
+public class Application {	
+		
+	public static void main(String[] args) {
+		ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
+		
+		PersonServices personService = context.getBean(PersonServices.class);
+		
+		//personService.saveData();
+		//personService.deleteById(1);
+		personService.searchByPassPortId(4);
+	}
+}
+
+
+
+@JsonManagedReference annotation for the first objects instantiated
+
+@JsonBackReference annotation for the second objects instantiated
+
+
+
+-------------------------- One-To-Many Mappings ------------------------------------
+
+The one-to-many mapping means that one row in a table is mapped to multiple rows in another table.
+
+We will implement one-to-many unidirectional mapping using @OneToMany and @JoinColumn JPA annotations.
+
+define a one-to-many unidirectional mapping between two entities using JPA and Hibernate.
+
+=======================  Example: POST and COMMENTS ===================
+
+==> Relationship Design
+
+One Post → Many Comments
+Each Comment belongs to one Post.
+
+In JPA terms:
+	Post = parent
+	Comment = child
+	Foreign key lives in comments table
+
+
+== Entities
+
+1. Post Entity (ONE side)
+
+@Entity
+public class Post {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+    private String content;
+
+    @OneToMany(
+            mappedBy = "post",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonManagedReference
+    private List<Comment> comments = new ArrayList<>();
+
+    // helper methods (important!)
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setPost(this);
+    }
+
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+        comment.setPost(null);
+    }
+
+    // getters & setters
+}
+
+
+2. Comment Entity (MANY side)
+
+@Entity
+public class Comment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String author;
+    private String text;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    @JsonBackReference
+    private Post post;
+
+    // getters & setters
+}
+
+
+=== What Each Annotation Means
+Annotation				Why
+@OneToMany(mappedBy="post")	Tells JPA Comment owns the relationship
+cascade = CascadeType.ALL	Saving Post also saves Comments
+orphanRemoval = true	Remove comment from list → deleted from DB
+@ManyToOne	Many comments → one post
+@JoinColumn	Creates post_id foreign key
+@JsonManagedReference / @JsonBackReference	Prevents infinite JSON recursion
+
+
+
+=== Repositories
+
+public interface PostRepository extends JpaRepository<Post, Long> {}
+
+public interface CommentRepository extends JpaRepository<Comment, Long> {}
+
+
+=== Service Layer
+
+
+@Service
+@RequiredArgsConstructor
+public class PostService {
+
+    private final PostRepository postRepository;
+
+    public Post createPost(Post post) {
+        return postRepository.save(post);
+    }
+
+    public Post addComment(Long postId, Comment comment) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        post.addComment(comment);
+        return postRepository.save(post);
+    }
+
+    public Post getPost(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+    }
+}
+
+
+
+=== Controller
+
+@RestController
+@RequestMapping("/posts")
+@RequiredArgsConstructor
+public class PostController {
+
+    private final PostService postService;
+
+    @PostMapping
+    public Post createPost(@RequestBody Post post) {
+        return postService.createPost(post);
+    }
+
+    @PostMapping("/{postId}/comments")
+    public Post addComment(@PathVariable Long postId,
+                           @RequestBody Comment comment) {
+        return postService.addComment(postId, comment);
+    }
+
+    @GetMapping("/{id}")
+    public Post getPost(@PathVariable Long id) {
+        return postService.getPost(id);
+    }
+}
+
+
+
+
+=== Test API
+
+1. Create Post		POST /posts
+{
+  "title": "Spring Boot JPA",
+  "content": "Learning relationships"
+}
+
+2. Add Comment		POST /posts/1/comments
+
+{
+  "author": "Alice",
+  "text": "Great post!"
+}
+
+
+3. Get Post 		GET /posts/1
+
+{
+  "id": 1,
+  "title": "Spring Boot JPA",
+  "content": "Learning relationships",
+  "comments": [
+    {
+      "id": 1,
+      "author": "Alice",
+      "text": "Great post!"
+    }
+  ]
+}
+
+
+Important Real-World Tips 
+ 1. Avoid EAGER on collections
+
+Default LAZY is better for performance.
+
+ 2. Use DTOs in production
+
+Entities directly in API = risky (lazy loading, overexposure).
+
+ 3. Helper methods matter
+
+If you don’t set both sides (post.addComment()), JPA bugs happen.
+
+ 4. Alternative to @JsonBackReference
+
+You can use: @JsonIgnore	on Comment.post if you don’t need the back link in JSON.
+
+
+
+
+
+
+
+
+
