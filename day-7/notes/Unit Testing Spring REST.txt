@@ -1,0 +1,596 @@
+==========================================
+How to perform Unit Testing for REST APIs?
+==========================================
+
+> Create a New Spring Starter 
+> Create a Controller & Service
+
+package com.fidelity.rest.services;
+
+public interface WelcomeServices {
+	
+	public String generateWelcomeMessage();
+	
+}
+
+package com.fidelity.rest.controllers;
+@RestController
+public class WelcomeRestController{
+  @Autowired
+  private WelcomeService welcomeService;
+
+  @GetMapping("/welcome")
+  public ResponseEntity<String> welcomeMsg(){
+   String welcomeMsg = welcomeService.getWelcomeMsg();
+   return new ResponseEntity<String>(welcomeMsg, HttpStatus.OK);
+  } 
+}
+
+> Run the Application		
+> Check it in Browser
+
+Testing Spring Applications:
+
+-> Spring Boot provides a number of utilities and annotations to help when testing your application
+
+-> Test support provided by two modules
+  a) spring-boot-starter-test (core items available in this)
+  b) spring-boot-test-autoconfigure (supports auto-configuration for tests)
+
+==== How to test a Spring boot web application? ====
+
+-> Verifying that the application has been initialized successfully
+-> Unit testing REST Controller with @WebMvcTest
+-> Unit testing Service Layer with Mockito
+-> Unit testing DAO Layer with @DataJpaTest and @AutoConfigureTestDatabase
+-> Integration testing using @SpringBootTest
+-> System testing using RestTemplate
+
+
+Case 1 => Testing if Application Loads Correctly (Controller and Service is injected)
+This is the simplest of all. 
+Write a Test class annotated with @SpringBootTest and check for any important eagerly initialized bean if it has been successfully injected into an auto-wired attribute or not.
+
+@SpringBootTest
+class ApplicationTests {
+ @Autowired
+ WelcomeRestController controller;
+	
+ @Autowired
+ WelcomeService service;
+	
+ @Test
+ public void contextLoads() {
+  Assertions.assertThat(controller).isNotNull();	
+  Assertions.assertThat(service).isNotNull();
+ }
+}
+
+Case 2 => Unit Testing the REST Controller
+
+- Write a Test class annotated with @WebMvcTest. 
+- We can specify which Controller we want to test in the annotation value itself.
+
+> Create a Test Case for WelcomeRestController in src/test/java
+
+package com.fidelity.rest.controllers;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import com.fidelity.rest.services.WelcomeServices;
+
+@WebMvcTest(value = WelcomeRestController.class) //loads only MVC components
+class WelcomeRestControllerTest {
+	
+	/*
+	 @MockBean is a Spring Boot annotation used in tests to add mock objects 
+	 to the Spring ApplicationContext. 
+	 It replaces any existing bean of the same type or adds a new one if none 
+	 exists, allowing for partial mocking of components. 
+	 */
+	@MockitoBean // from spring boot 3.4.0  -- before that @MockBean, replaces WelcomeService with a Mockito mock
+	private WelcomeServices welService;
+
+	@Autowired
+	private MockMvc mockMvc; // simulates HTTP requests without starting a server; used to send a request to REST API /welcome
+
+	@Test
+	void testShowWelcomeMessage() throws Exception {
+		
+		// define mock object behaviour
+		Mockito.when(welService.generateWelcomeMessage()).thenReturn("Welcome to Cognizant");
+		
+		/*
+		// prepare HTTP get request
+		MockHttpServletRequestBuilder reqBuilder = MockMvcRequestBuilders.get("/welcome");
+
+		// send request
+		ResultActions perform = mockMvc.perform(reqBuilder);
+
+		// hold the response
+		MvcResult mvcResult = perform.andReturn();
+
+		// validate response
+		MockHttpServletResponse response = mvcResult.getResponse();
+
+		String responseText = response.getContentAsString();
+		System.out.println(responseText);
+		
+		int status = response.getStatus();
+		System.out.println(status);
+
+		assertNotNull(responseText);
+		assertEquals(200, status);	
+		*/
+		
+	
+		mockMvc.perform(MockMvcRequestBuilders.get("/welcome"))
+		  .andExpect(MockMvcResultMatchers.status().isOk());
+
+	}
+
+}
+
+
+
+==== Unit Testing for Controller ====
+
+-- UserDto.java --
+@Data
+@AllArgsConstructor
+public class UserDto {
+	private Long id;
+	private String name;
+}
+
+-- UserService.java --
+public interface UserService {
+	public UserDto getUserById(Long id);
+}
+
+
+-- UserController.java -- 
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/{id}")
+    public UserDto getUser(@PathVariable Long id) {
+        return userService.getUserById(id);
+    }
+}
+
+
+---- UserControllerTest.java ---
+
+@WebMvcTest(UserController.class)
+class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private UserService userService;
+
+    @Test
+    void shouldReturnUser() throws Exception {
+        UserDto user = new UserDto(1L, "Alice");
+
+        when(userService.getUserById(1L)).thenReturn(user);
+	//when(userService.getUserById(any())).thenReturn(user);
+
+        mockMvc.perform(get("/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value("Alice"));
+    }
+}
+
+
+-- In Mockito, any() is an argument matcher used in stubbing and verification to match any argument, including null values and variable arguments. It's a general-purpose matcher defined in the org.mockito.ArgumentMatchers class
+
+-- Purpose: any() is used when you want a method call to be stubbed or verified regardless of the actual object instance or value passed to a specific argument.
+
+// Correct: uses only matchers
+when(mockedObject.someMethod(any(), anyString(), eq("third"))).thenReturn(true);
+
+// Incorrect: mixes a matcher with a real value
+// when(mockedObject.someMethod(any(), "second", "third")).thenReturn(true); // Throws exception
+
+
+
+@WebMvcTest → loads only MVC components
+@MockBean → replaces UserService with a Mockito mock
+MockMvc → simulates HTTP requests without starting a server
+jsonPath → asserts response body
+
+
+
+==== Testing POST requests =====
+
+@Test
+void shouldCreateUser() throws Exception {
+    UserDto input = new UserDto(null, "Bob");
+    UserDto saved = new UserDto(2L, "Bob");
+
+    when(userService.create(any())).thenReturn(saved);
+
+    mockMvc.perform(post("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                  "name": "Bob"
+                }
+            """))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(2L));
+}
+
+
+
+==== Testing validation errors ====
+
+@PostMapping
+public UserDto create(@Valid @RequestBody UserDto dto) {
+    return userService.create(dto);
+}
+
+
+
+@Test
+void shouldFailValidation() throws Exception {
+    mockMvc.perform(post("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{}"))
+            .andExpect(status().isBadRequest());
+}
+
+
+=== Testing exception handling ====
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleNotFound() {
+        return "User not found";
+    }
+}
+
+
+Add it to your test:
+
+@WebMvcTest(UserController.class)
+@Import(GlobalExceptionHandler.class)
+
+
+@Test
+void shouldReturn404WhenUserMissing() throws Exception {
+    when(userService.getUserById(1L))
+            .thenThrow(new UserNotFoundException());
+
+    mockMvc.perform(get("/users/1"))
+            .andExpect(status().isNotFound());
+}
+
+
+
+======================================================
+Use @SpringBootTest only when:
+
+1. You want full integration (DB, security, filters)
+2. You're writing integration tests, not unit tests
+======================================================
+
+--- UserService.java ---
+
+@Service
+public class UserService {
+
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
+}
+
+2. Basic Service Unit Test Setup
+
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService userService;
+}
+
+
+@Mock → fake dependencies
+@InjectMocks → inject mocks into service
+@ExtendWith(MockitoExtension.class) → enables Mockito (JUnit 5)
+
+
+Note: No Spring container involved.
+
+
+== Testing a successful case
+
+@Test
+void shouldReturnUserWhenFound() {
+    User user = new User(1L, "Alice");
+
+    when(userRepository.findById(1L))
+            .thenReturn(Optional.of(user));
+
+    User result = userService.getUserById(1L);
+
+    assertNotNull(result);
+    assertEquals("Alice", result.getName());
+}
+
+
+== Testing exception scenarios (VERY IMPORTANT)
+
+@Test
+void shouldThrowExceptionWhenUserNotFound() {
+    when(userRepository.findById(1L))
+            .thenReturn(Optional.empty());
+
+    assertThrows(UserNotFoundException.class, () ->
+            userService.getUserById(1L));
+}
+
+
+
+== Testing save / create logic
+
+@Test
+void shouldCreateUser() {
+    User input = new User(null, "Bob");
+    User saved = new User(2L, "Bob");
+
+    when(userRepository.save(input)).thenReturn(saved);
+
+    User result = userService.createUser(input);
+
+    assertEquals(2L, result.getId());
+    verify(userRepository).save(input);
+}
+
+
+
+== Verifying interactions (Mockito verify)
+
+---> The verify() method in Mockito is used to confirm that specific interactions with mocked objects occurred. This is particularly useful in testing
+
+
+@Test
+void shouldCallRepositoryOnce() {
+    User user = new User(1L, "Alice");
+
+    when(userRepository.findById(1L))
+            .thenReturn(Optional.of(user));
+
+    userService.getUserById(1L);
+
+    verify(userRepository, times(1)).findById(1L);
+}
+
+
+--- Mocking multiple dependencies
+
+@Mock
+private EmailService emailService;
+
+@Test
+void shouldSendEmailOnUserCreation() {
+    User user = new User(null, "Alice");
+
+    when(userRepository.save(any())).thenReturn(new User(1L, "Alice"));
+
+    userService.createUser(user);
+
+    verify(emailService).sendWelcomeEmail("Alice");
+}
+
+
+
+====== What is an Integration Test in Spring Boot? ======
+
+An integration test checks that multiple layers work together:
+
+Controller
+
+Service
+
+Repository
+
+Database
+
+Security / Filters (if enabled)
+
+
+
+When to write integration tests?
+
+Use them when you want to verify:
+
+End-to-end request → response flow
+
+JPA mappings & queries
+
+Transaction behavior
+
+Real DB interaction (H2/Testcontainers)
+
+Security configuration
+
+
+
+@SpringBootTest
+class ApplicationIntegrationTest {
+}
+
+- Loads the full application context
+- Is slower than unit tests
+- Is very realistic
+
+
+
+Integration test with Controller + DB
+Example REST Controller
+
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @PostMapping
+    public User create(@RequestBody User user) {
+        return userService.create(user);
+    }
+
+    @GetMapping("/{id}")
+    public User get(@PathVariable Long id) {
+        return userService.get(id);
+    }
+}
+
+
+Integration test setup (MOST COMMON)
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@Transactional
+class UserIntegrationTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private UserRepository userRepository;
+}
+
+
+@SpringBootTest → full context
+
+@AutoConfigureMockMvc → real HTTP calls (no server)
+
+@Transactional → rollback after each test (clean DB)
+
+
+Test with real DB (H2)
+application-test.yml
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+
+
+Activate profile:
+
+@SpringBootTest
+@ActiveProfiles("test")
+
+
+
+POST + GET integration test
+
+@Test
+void shouldCreateAndFetchUser() throws Exception {
+
+    mockMvc.perform(post("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                  "name": "Alice"
+                }
+            """))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").exists());
+
+    User saved = userRepository.findAll().get(0);
+
+    mockMvc.perform(get("/users/" + saved.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Alice"));
+}
+
+
+
+
+
+Using real HTTP port (optional)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class UserHttpIntegrationTest {
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Test
+    void shouldFetchUser() {
+        User user = restTemplate.getForObject("/users/1", User.class);
+        assertNotNull(user);
+    }
+}
+
+
+
+
+Integration test with Security
+
+Disable security (if not testing it):
+
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
+
+
+
+OR test with user:
+
+@Test
+@WithMockUser(username = "admin", roles = "ADMIN")
+void securedEndpointTest() throws Exception {
+    mockMvc.perform(get("/admin"))
+            .andExpect(status().isOk());
+}
