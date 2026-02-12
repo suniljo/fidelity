@@ -1,0 +1,42 @@
+Snowflake Pricing
+=================
+
+
+================================
+Snowflake Terminology & Objects
+================================
+
+Snowflake is a cloud-based data platform structured hierarchically, with the account as the top-level container, followed by databases, schemas, and objects (tables, views, stages, etc.). Key components include virtual warehouses for compute, micro-partitions for storage, and Information Schema for metadata. Data access is managed through roles and grants on securable objects.
+
+
+Core Snowflake Object Hierarchy
+
+    Account: The top-level container for all Snowflake resources.
+    Database: A container that houses schemas and database objects.
+    Schema: A logical grouping of database objects (tables, views, etc.) within a database.
+    Table: The fundamental unit of structured data, automatically divided into micro-partitions.
+    View: A stored SQL query that behaves like a table.
+    Secure View: A view that limits data access to specific rows/columns for enhanced security.
+
+
+
+Key Technical Terminology
+
+    Virtual Warehouse: A cluster of computing resources (CPU, memory) used for executing queries, loading data, and performing DML operations.
+    Micro-partitions: The way data is stored in Snowflake; all data is automatically divided into contiguous units for high-performance querying.
+    Information Schema: A built-in, read-only set of views containing metadata about all objects in an account.
+    Stage: Locations used to store data files for loading into or unloading from Snowflake tables (internal or external).
+    Role: An entity to which privileges (access rights) are granted, used for access control.
+    Streams: Objects that track CDC (Change Data Capture) information for tables.
+    Tasks: Objects used to schedule and run SQL queries/stored procedures.
+    Data Types (Semi-structured): OBJECT, ARRAY, and VARIANT.
+
+
+
+Metadata & Governance
+
+    Object Tagging: A mechanism to track sensitive data by tagging objects like tables and columns.
+    Fail-safe: A 7-day period for data recovery after Time Travel expires.
+    Clone: Creating a "zero-copy" clone of a table, schema, or database, which does not incur additional storage costs.
+
+

@@ -1,0 +1,385 @@
+=========
+Snowflake
+=========
+
+
+Snowflake - Cloud based Data warehousing
+          - is an Analytics Database - Datawarehouse as a Service
+	  - Datawarehouse on Cloud
+	  - got multi-clustered shared architecture
+
+What is ETL?
+
+Extraction - business data located in different locations and server - we want to extract
+Transforming - Applying some transformations, ex: converting INR to USD or USD to INR
+Loading - loading of transformed data and cleaned data into centralized locations data warehouses. Ex: SSIS, Datafactory, DBT (Data Build Tool) 
+
+Raw Data ---- converted to --- Final Data using ETL
+
+Snowflake is a Datawarehouse
+
+
+Snowflake provides a single, global platform for your entire database ecosystem, allowing for easy collaboration between multiple business units. This platform provides the ideal balance of performance, flexibility, and near-infinite scalability for quickly uploading, combining, analysing, and authentically sharing data everywhere, at any time. It is a fully managed service that is simple to use while handling a large number of concurrent workloads. The best thing is that it can run on several cloud platforms, including Amazon S3, Microsoft Azure, and Google Cloud Platform.
+
+
+
+=========================
+1. Snowflake Introduction
+=========================
+
+Snowflake is cloud data warehouse unlike traditional databases and data warehouses which runs on on-premise systems.
+
+Snowflake runs on cloud infrastructure and infrastructure can come from any of the three cloud providers - AWS, Microsoft Azure, GCP.
+
+Snowflake is in high demand because of its rich features such as time travel, fail safe, data cloning, data sharing and many more.
+
+The important aspect to use Snowflake, is we pay what we use.
+
+Snowflake charge the customers based on the compute and storage cost. This means Snowflake separates the storage cost from the compute.
+
+Snowflake runs on virtual warehouses, which are the clusters, or we can say the computing engines that we use to run our queries.
+
+The time for which we are running the queries for one minute, or it can be one hour, Snowflake just charge you for that specific time only; and the data that we are storing on Snowflake, storage cost is separate for it.
+
+This is a advantage to the customers because the total cost for using a data warehouse has been drastically reduced;  unlike traditional warehouses where they have to pay the cost upfront for compute and storage both.
+
+Snowflake also removes the cumbersome task to set up the infrastructure, both hardware and software.
+
+Because Snowflake manages all the infrastructure as they provide this snowflake platform as Software-as-a-Service -  which means we are to just create an account and we are ready to create a data warehouse.
+
+This saves customer efforts because they don't have to deal with any kind of installation, hardware or software issues; rather, they can directly start working on setting up the data warehouse and perform day to day operations.
+
+Snowflake is elastic, highly scalable, fault tolerant, and can also process massive parallel processing by spinning up multiple clusters to process huge workload's and complex queries.
+
+
+
+Que-1:  How snowflake charge their customers for Storage and Compute?
+
+A. Storage and Compute costs are charged together
+B. Snowflake modern architecture separates Storage and Compute costs
+
+Que-2: Which cloud provider is not supported with Snowflake?
+A. Amazon Web Services (AWS)
+B. Microsoft Azure
+C. Oracle Cloud Infrastructure (OCI)
+D. Google Cloud Platform
+
+Que-3: Is snowflake available on premise and can be downloaded from snowflake's website?
+
+A. Yes
+B. No
+
+Snowflake is a modern Data Warehouse which is only available on Cloud, hence does not need any download, installation or upgradation. It is offered as Software as a Service (SaaS) hence there is no need to manage any hardware. Also, it does not require any software installation, configuration and maintenance as well. Once users start using Snowflake, ongoing maintenance, performance tuning, data encryption, management is handled by Snowflake themselves.
+Snowflake supports most of the modern programming languages such as Python, Spark, Ruby etc.
+
+
+===================================================
+2. Snowflake Free Trial Edition & Self Registration
+===================================================
+
+--- Create Free Account ---
+
+https://www.snowflake.com/en/
+Start For Free
+
+
+
+User Name: xxxxxxx
+Password : xxxxxx
+
+
+Snowflake homepage which is known as "SNOWSIGHT".
+
+In past we used to have "Snowflake Classic Console" as well, which was a different homepage, and that was the console on which we used to work. But now snowflake has decommissioned that for the new users and we are only using "SNOWSIGHT" now.
+
+== Snowsight is the primary, modern web interface for Snowflake, providing a unified experience for data professionals to work with their data using SQL or Python. It has fully replaced the legacy Classic Console and serves as the central hub for data analysis, application development, and platform management within the Snowflake environment
+
+DBT - Data Build Tool
+
+
+==> Check Dashboard - Snowsight
+
+1. Database Explorer
+-> SNOWFLAKE - an application / database for managing Snowflake
+-> SNOWFLAKE_SAMPLE_DATA --> a shared database
+    --> TPCH_SF100  (Schema) -- Tables  - Customer (15M rows, 1.0GB Size)
+
+Compute > Warehouses
+SHOW WAREHOUSES;
+USE WAREHOUSE SNOWFLAKE_LEARNING_WH;
+
+2. Add Data   + Add data
+
+3. Create a New Warehouse --> Compute > Warehouses > +Warehouse
+
+4. Change User Role - My Profile
+
+5. Change Theme
+My Profile > Appearance > Dark
+
+
+
+
+===============================
+3. Different Roles in Snowflake
+===============================
+
+My Profile > Switch role
+Admin > Cost Management
+
+Change User Role to SNOWFLAKE_LEARNING_ROLE
+Admin > Cost Management
+
+The roles provided provided by snowflake is available in My profile. However, you can also create your custom roles based on the business requirements.
+
+
+1. ACCOUNTADMIN
+2. SECURITYADMIN
+3. USERADMIN
+4. SYSADMIN
+5. ORGADMIN
+
+
+1. ACCOUNTADMIN
+-> It is top level role in snowflake, which means it can do pretty much everything that is on a particular snowflake account, such as it can create any database objects.
+
+It can also grant any permissions. 
+It can create roles, users, etc. and it can also perform the billing related task or can also monitor the account usage.
+
+Since it's a kind of master role or a super user role, so it should be granted to a limited number of users only.
+
+2. SECURITYADMIN
+->  This is specifically meant for monitoring and managing the users and roles on a particular snowflake account.
+
+This doesn't have privileges such as account admin, which can create the other database objects such as a database schema or a table, but this is for managing the users and roles on snowflake, and it can also modify any role, any user permissions, and can also grant or revoke the privileges as well.
+
+3. USERADMIN
+
+-> This role can also create the user and roles. But the basic difference between both of these are user admin cannot grant or revoke the privileges of all the users that are available in snowflake.
+
+It has more access to the users and roles that this user admin has created.
+
+4. SYSADMIN
+-> This role specifically meant for the database objects such as creation of a database itself or under a database. We can create different schemas, tables, views, etc. and this role has power to grant privileges on the database objects to any other roles or users.
+
+5. ORGADMIN
+-> This role is meant to manage all the activities on the organization level. An organization can have different snowflake accounts at a time, so it becomes important for an organization admin to monitor the account usage in different snowflake accounts and take necessary actions for the budgets and to better plan for the future.
+
+6. PUBLIC
+-> This role is something which is automatically assigned to all the users and roles which are created on snowflake.
+
+This role should be ideally assigned to such users, on which we do not need an explicit control on the on their access, or in such scenarios where we treat all the users on the same level who join the organization.
+
+
+=========================
+4. Snowflake Architecture
+=========================
+
+The architecture of Snowflake is a combination of standard shared-disk and shared-nothing database technologies. 
+
+Snowflake, like shared-nothing architectures, processes queries utilizing MPP (Massively Parallel Processing) compute clusters, in which each node maintains a fraction of the full data set locally. This technique combines the ease of data management of a shared-disk design with the performance and scale-out advantages of a shared-nothing architecture.
+
+
+Snowflake's unique architecture design enables users to automatically request for storage, pay for exclusive resources, and enjoy the benefits of a well-managed cloud data warehouse This also has automatic scaling, data sharing, multi-cluster, multi-cloud architecture For increased flexibility and efficiency it offers.
+
+
+Snowflake's architecture mainly consists of three layers.
+
+1. Database Storage Layer
+2. Query Processing Layer/ Compute Layer
+3. Cloud Services Layer/ Brain Layer
+
+Main Characteristics of Snowflake Architecture
+
+-> Snowflake is a data platform as self-managed service; it means that you do not need to manage anything of Snowflake - whatever database storage we can see in the architecture, or query processing layer or the cloud services are efficiently and effectively managed by Snowflake themselves and we have to just take care of the implementation of the use-cases that we are doing on Snowflake; rest everything is taken care by Snowflake itself
+
+-> You do not need to do any hardware setup or maintenance
+-> No software installation is required
+-> If you do not need to do any hardware installation or maintenance as well as software installation - this means; there is no overhead of ongoing maintenance, upgrades or tuning - all are handled by Snowflake very efficiently
+
+-> Snowflake runs completely on cloud-infrastructure - which means we do not need to install any software on our PC to run Snowflake - just need a browser - using which we can access Snowflake.
+-> Snowflake cannot be setup on Private On-Premise or Hosted Infrastructures.
+
+-> Since everything is managed on cloud based Snowflake - hence we are using COMPUTE and STORAGE services virtually on Snowflake - which is indirectly connected to any of the 3 cloud providers (AWS, GCP, Azure) on which we have hosted all provision in Snowflake account. This means; in the backend Snowflake has acquired the COMPUTE and STORAGE from one of these 3 cloud providers
+  
+-> The core of Snowflake is build on the HYBRID nature of SHARED DISK and SHARED-NOTHING architecture.
+means; we can see in the bottom layer of Snowflake Architecture - Database Layer - which is a common layer - which has all the storage of Snowflake - which can be accessed by different COMPUTE ENGINES that we provisioned on Snowflake (which we call VIRTUAL WAREHOSES). Each of the Virtual Warehouses can access the common storage - which is the property of SHARED DISK - means; a common storage is accessible to multiple computes.
+
+-> How does it take the benefit of SHARED-NOTHING Architecture?
+
+whenever it is processing any data - a portion of data is divided into each of the node in the cluster; this is the main property of shared-nothing architecture.
+Snowflake takes benefit of both SHARED DISK and SHARED-NOTHING
+
+1. Database Storage Layer:
+
+-> On Snowflake - data gets stored in a COLUMNAR FORMAT (COLUMNAR STORAGE) - which is optimised for the READ operation
+
+-> Snowflake do the management of data on their own; and you do not need to take care on how data is being stored in the backend on the storage services and how much the data is compressed. Snowflake is taking care of everything (OPTIMIZED, COMPRESSED AND COLUMNAR FORMAT)
+
+-> Data gets stored in one of the Cloud Provider's Storage - either AWS S3, Azure Data Lake Storage, or GCP Buckets
+
+-> Data is fully managed by Snowflake
+-> Since the data is managed by Snowflake, and is being saved in one of the Cloud Provider's location - data is not directly accessible to users- but to access the data from the storage location - user need to submit the SQL Query on Snowflake Web UI or any other mechanism like CLI, Python connector etc to access the data from the storage service.
+
+
+2. Query Processing Layer
+
+ -> this layer is also known as COMPUTE Layer or Processing Layer - in that we have all the compute engines; known as Virtual Warehouses on Snowflake.   
+
+-> Virtual Warehouses does the Query Processing
+
+-> Virtual Warehouse is an MPP (Massive Parallel Processing)  Compute Cluster - they do the execution of the submitted query in parallel by submitting it to different nodes of the cluster.
+
+-> Each of the Virtual Warehouses that we setup are isolated from each other
+
+-> Virtual warehouses are real workers of Snowflake
+ 
+
+3. Cloud Services Layer
+
+-> This can be considered as the BRAIN of the system - which works for the co-ordination of activities across your Snowflake Account.
+
+-> If you are submitting any of the query (SQL) on Snowflake - it takes  care of everything - taking about optimization,  taking about Metadata Management, about the security and all the infrastructure that is running on Snowflake - like, taking the control of the Virtual warehouses from the backend, saving your data optimally, doing the compression - everything is with Cloud Services.
+
+-> In the backend it uses compute instances - credits may incur for usage of cloud services layer
+
+-> It is majorly used for
+    (a) Authentication & Access Control of Users
+    (b) Infrastructure Management - like acquiring COMPUTE, STORAGE services 
+    (c) Metadata Management - whatever objects we are creating on Snowflake - it manages the metadata of it
+    (d) Query Parsing & Optimization - whenever query is submitted it does parsing and optimization to the best - so that we can retrieve the data in quicker and at a cheaper cost.
+    (e) It takes charge of Access Control - user roles and privileges
+
+-> Snowflake services layer manages its end to end operation and management - Security, Metadata Management, Optimization, Access etc
+
+------------------------------------------------
+-> Zero Copy Cloning
+    - Snowflake Zero-Copy Cloning is a feature that instantly creates copies of tables, schemas, or databases without physically duplicating underlying data
+    - It uses metadata pointers to share micro-partitions, reducing storage costs to zero until data changes are made, enabling rapid development, testing, and backup.
+
+
+-> Time Travel
+    Snowflake Time Travel is a powerful data protection feature that allows users to access and restore historical data (i.e., data that has been changed or deleted) at any point within a defined retention period. It is a form of Continuous Data Protection (CDP) and is automatically enabled for all accounts with a default retention period of one day.
+
+
+-> Data Sharing
+    - Snowflake Secure Data Sharing is a powerful feature that allows organizations to securely share live, read-only data from a data provider account with one or more data consumer accounts without creating copies or moving the data. This zero-ETL approach ensures that consumers always have access to the most current data in near real-time, while avoiding storage costs and data synchronization issues.
+
+
+-> Micro-Partitions
+    - Micro-partitions are the fundamental unit of storage in the Snowflake Data Platform. Unlike traditional databases that require manual partitioning schemes, Snowflake automatically divides all table data into these small, contiguous units of storage to optimize performance and management.
+
+
+=============================
+1. Decoupled storage & compute
+
+Snowflake's architecture is built on a unique, multi-cluster, shared-data architecture that fundamentally decouples storage and compute, setting it apart from traditional tightly-coupled data warehouses.
+
+This separation allows users to store vast amounts of data in a central repository while scaling compute resources (virtual warehouses) up, down, or out on-the-fly to handle fluctuating, concurrent workloads without data movement.
+
+2. Warehouse Scaling
+
+Snowflake offers two primary ways to scale virtual warehouses to balance performance, concurrency, and cost: (a) Scaling Up (Vertical) and (b) Scaling Out (Horizontal)
+
+--> Scaling Up (Vertical Scaling)
+Scaling up involves resizing an existing warehouse to a larger "T-shirt size" (e.g., from Small to Large).
+
+--> Scaling Out (Horizontal Scaling)
+Scaling out uses multi-cluster warehouses to add or remove identical clusters of the same size.
+
+3. Query execution flow
+
+The Snowflake query execution flow is a two-phase process managed by its unique decoupled Cloud Services and Virtual Warehouse architecture. 
+
+Phase 1: The Cloud Services Layer (Compilation and Optimization)
+
+When a query is submitted, the Cloud Services layer handles the planning and optimization without using a virtual warehouse. 
+
+    -> Parsing and Semantic Validation: The raw SQL text is deconstructed into an internal structured format. This step checks for syntax errors and validates the query's logical sense, including verifying object names, data types, and user permissions.
+    -> Optimization: Snowflake's optimizer creates the most efficient logical execution plan. It considers multiple potential join orders, uses table statistics (metadata for micro-partitions) to estimate costs, and selects the path with the lowest estimated cost. This process heavily uses micro-partition pruning to identify and skip unnecessary data scans.
+    -> Query Compilation: The logical plan is then translated into a physical execution plan, a Directed Acyclic Graph (DAG) composed of physical operators (e.g., TableScan, Filter, Join).
+
+
+
+Phase 2: The Virtual Warehouse Layer (Physical Execution)
+
+The physical execution plan is passed to the Virtual Warehouse layer, which consists of dedicated compute resources (nodes) to process the data. 
+
+    -> Query Execution: The virtual warehouse nodes execute the physical plan using a highly efficient columnar, vectorized, and push-based execution model. Data is processed in batches (vectors) within each node, maximizing CPU and cache utilization.
+    -> Caching: If the results of an identical query are already stored in the result cache (which persists for 24 hours), Snowflake can bypass the execution phase and return the cached results immediately, significantly reducing query time.
+    -> Result Delivery: The final result set is returned to the user or application.
+
+
+4. Result Caching
+
+- Snowflake’s Result Cache stores the results of executed queries in the cloud services layer for 24 hours, allowing identical queries to return data instantly without using a virtual warehouse. This automated, no-cost feature boosts performance by reusing results, provided the underlying table data remains unchanged, with the 24-hour timer resetting upon each re-use.
+
+
+5. Cost Management Basics
+
+Snowflake cost management centers on a pay-as-you-go model for compute (warehouses) and storage, requiring visibility, control, and optimization via the Snowsight Admin-Cost Management tab. Key strategies include setting up budgets, using resource monitors to auto-suspend warehouses, reducing warehouse auto-suspend times for idle compute, and monitoring query history for inefficiencies.
+
+Use the Snowsight Admin » Cost Management interface to analyze credit consumption, top warehouses, and storage costs.
+
+
+==================
+Snowflake Workflow
+==================
+1. User connects to Snowflake via Client Drivers like ODBC/ JDBC and selects a warehouse
+
+2. Services Layer authenticates the User & based on the request it creates a Query Execution Plan
+
+3. Services send Query Execution instruction to warehouse
+
+4. Results are returned back to user
+
+ 
+
+
+  
+1. Ques: Snowflake is a: Cloud-native data warehouse
+
+2. Ques: Which of the following is a key Snowflake architecture principle?
+a) Shared-disk
+b) Shared-nothing
+c) Hybrid cluster
+d) Coupled compute-storage
+
+- A foundational architectural principle of Snowflake is the separation of storage and compute
+
+- Hybrid Architecture: Snowflake utilizes a hybrid of shared-disk (centralized storage) and shared-nothing (independent compute nodes) database technologies.
+
+- The primary advantage of multi-cluster warehouses is:
+a) Better data compression
+b) Horizontal scaling during high concurrency
+c) Faster ETL only
+d) More secure data storage
+
+
+- Which service manages metadata, security, optimization?
+a) Compute Layer
+b) Storage Layer
+c) Cloud Services Layer
+d) External Stage
+
+
+- Fail-safe stores data for:
+a) 1 hour
+b) 7 days
+c) 24 hours
+d) 90 days
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

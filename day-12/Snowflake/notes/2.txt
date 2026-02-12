@@ -1,0 +1,214 @@
+==================
+Virtual Warehouses
+==================
+
+How to create Virtual Warehouses?
+
+These virtual warehouses are the compute engines which will be used to execute any queries on snowflake.
+
+Virtual warehouses have their specific characteristics and various features.
+
+
+Compute > Warehouses
+
+-> Create a New Virtual Warehouse
+
++Warehouse 
+Warehouse Name: test_wh
+Comment: This is a test Virtual Warehouse
+Size: X-Small (T-Shirt Size)
+
+Advanced Options:
+
+1. Auto-resume: Automatically resumes the warehouse when any statement that requires a warehouse is submitted. This option comes handy when you do not need to manually resume the virtual warehouse when any user is executing the query, otherwise their query will not be executed if the virtual warehouse is not. This feature allows us to auto resume the virtual warehouse as soon as a query has been submitted to this virtual warehouse in the running state.
+
+2. Auto-suspend: Automatically suspends the warehouse if it is inactive for the specified period of time
+
+-> Multi-cluster Warehouse:
+Min Cluster: 1
+Max Cluster: 2
+Scaling Policy: Standard
+
+
+-> Query Acceleration: Unselect
+> Create Warehouse
+
+
+Form Dashboard: Enable additional Columns
+
+
+==> Suspend the Warehouse: ... 
+
+
+
+===> Multi-cluster warehouse, where you can scale your virtual warehouse horizontally by adding more clusters to it. 
+Scaling up and scaling down because you are increasing or decreasing the size of the cluster.
+
+Talking about the Multi-cluster warehouse, we can set two primary things- One is minimum cluster that as soon as the virtual warehouse is started, how many clusters should be activated?
+
+It is advisable to keep one, but if you think that your workload is huge so you can go with some different number as well.
+
+As soon as your query workload has increased on this virtual warehouse so we can set it up to two, three or any number up to ten.
+
+
+
+There are two types of virtual warehouses.
+
+One is "STANDARAD" and second is "SNOWPARK OPTIMIZED".
+
+Standard Virtual warehouses should be used when you do not need any intense memory or cache, and when you do not know which virtual warehouses to select. So standard most safest option to go for. 
+
+Snowpark optimized have been introduced lately for a larger memory and cache, which is widely used for memory intensive operations.
+
+
+
+
+
+==> Query Acceleration is also known as Query Acceleration Service QAS.
+Snowflake has introduced this service specifically for such cases, where user is submitting the adhoc requests for queries, or they can be scenario where a user has submitted a query which has to scan a lot of data from the backend and has to do extensive processing, which may need some additional clusters as well.
+
+So what snowflake is doing in the backend is - it is attaching some shared compute clusters within your virtual warehouse for the time being to execute your queries, and after that, it released those clusters to the shared allocation that they have in the back end.
+
+It has just one property, which is scale factor that how many maximum clusters you want to attach.
+
+The scale factor value starts from 1 and can go up to no limit. If you select no limit, it will keep on adding the clusters from its back end to complete the query request, which has been submitted by the users.
+
+It is advisable to not use this query acceleration when you start working on snowflake, but as soon as your demand rises, you can explore this option later on.
+
+
+
+==> Create a Warehouse Programmatically:
+
+Using DDL statement we can create a virtual warehouse in snowflake.
+
+Add New : SQL File
+Create a Database: CREATE DATABASE DB_DEMO;
+Choose Database: DEMO_DB
+
+To get all details of the created Warehouse:  select get_ddl('WAREHOUSE', 'TEST_WH')
+'WHAREHOUSE' - Object type
+
+create or replace warehouse TEST_WH with
+	warehouse_type='STANDARD'
+	warehouse_size='X-Small'
+	max_cluster_count=2
+	min_cluster_count=1
+	scaling_policy=STANDARD
+	auto_suspend=300
+	auto_resume=TRUE
+	initially_suspended=FALSE
+	COMMENT='This is a test Virtual Warehouse'
+	enable_query_acceleration=FALSE
+	query_acceleration_max_scale_factor=8
+	max_concurrency_level=8
+	statement_queued_timeout_in_seconds=0
+	statement_timeout_in_seconds=172800
+;
+
+
+SQL: SHOW WAREHOUSES
+SQL: USE WAREHOUSE SNOWFLAKE_LEARNING_WH;
+
+
+==== Virtual Warehouses - Standard Vs Economy ===
+
+ 
+Question 1:
+
+Which one is not a role in Snowflake?
+A. ACCOUNTADMIN
+B. SNOWFLAKE
+C. SYSADMIN
+D: PUBLIC
+
+Question 2:
+
+What is default role selected on Snowflake account once you login to snowflake WEB UI?
+A. ACCOUNTADMIN
+B. PUBLIC
+C. SYSADMIN --
+
+Question 3:
+
+Which layer is not there in Snowflake Architecture?
+A. Storage Layer
+B. Compute Layer
+C. Cloud Service Layer
+D. Recovery Layer
+
+Question 4:
+
+Which layer of snowflake architecture can be said as brain of system?
+A. Storage Layer
+B. Compute Layer
+C. Cloud Service Layer
+
+Question 5:
+
+Virtual Warehouses in Snowflake are used for?
+A. Storage
+B. Compute
+C. Both
+
+Question 6:
+
+Which of the below are true with respect to snowflake web ui?
+A. Each worksheet can have different role, warehouse, schema and database --
+B. You will be able to run a 'PUT' command from worksheet
+C. You must use the same role and warehouse for all worksheets
+
+Question 7:
+
+In which layer of snowflake, the security information is stored?
+A. Storage
+B. Compute
+C. Cloud Services
+
+
+Question 8:
+
+Snowflake adds the system defined roles to each new account. Check the odd one out.
+A. ACCOUNTADMIN
+B. SECURITYADMIN
+C. SYSADMIN
+D: PUBLIC
+E. SUPERUSER --
+F. USERADMIN
+
+Question 9: 
+Which one of these is used by snowflake for computing?
+A. Azure Virtual Machine
+B. Virtual Warehouses
+C. AWS EC2 Instance
+
+Question 10:
+
+In a multi-cluster warehouse, you will need to manually scale the warehouses(minimum cluster to maximum cluster)
+A. TRUE
+B. FALSE
+
+Note: Snowflake's multi-cluster warehouses automatically scale compute resources based on user-defined minimum and maximum clusters, eliminating the need for manual adjustments.
+
+
+Question 11:
+
+Which Snowflake role can see billing on the account, administer users, create reader accounts and manage all database objects? - ACCOUNTADMIN
+
+Question 12: 
+What happens when a Snowflake warehouse is SUSPENDED? - Compute stops, storage remains active
+
+Question 13: 
+The primary advantage of multi-cluster warehouses is: Horizontal scaling during high concurrency
+
+Question 14:
+
+Which service manages metadata, security, optimization?
+A. Compute Layer
+B. Storage Layer
+C. Cloud Services Layer
+D. External Stage
+
+
+
+
+

@@ -1,0 +1,130 @@
+Micro-Partitioning
+==================
+
+Partitioning is a process to divide a table into multiple chunks so that query processing or data retrieval can be faster.
+
+In traditional warehouses, a partition is a unit of management that is manipulated independently.
+
+When we create multiple partitions of a table in a traditional warehouse, each partition is independent of each other.
+
+Any processing to be done on the data table which have multiple partitions - each partitions will be manipulated independently.
+
+This is known as static partitioning of large tables.
+
+Partitioning is a process which is basically used for processing in large tables.
+
+It helps us to achieve acceptable performance and enables better scaling.
+
+However, there are some limitations in the traditional warehouses partitioning.
+
+The biggest limitation is the maintenance overhead.
+
+You have to keep track of your data table if your data size is increasing day by day. So the query processing can get slower.
+
+And you have to repartition your table based on some other key or maybe same key to create different partitions.
+
+But all of these operations includes the maintenance overhead so that you have to keep track of each table and you have to repartition maybe in future as well.
+
+The second limitation is data skewness. It's possible that - if a table has multiple columns and in one of the columns you are using to create the partitions, let's suppose it is gender column in which there are two values male and female.
+
+And for instance, female has a large proportion of observations as compared to males. So traditional warehouses will create the partition based on the values most of the times.
+
+So let's suppose there are 100 observations for females, but just 10 observations for males. It will create different size of partitions.
+
+This means data skewness will be there once we apply partitions on the gender column.
+
+The third limitation is it creates different size of partitions- similar to data skewness.
+
+So again, talking about the same example where we are applying the partitioning on the gender column, so female partition will have large number of rows. However, the male partition will have lower number of rows.
+
+So this is another limitation of partitioning in traditional data warehouses.
+
+
+
+==== Partitioning in Snowflake - Micro-Partitioning ====
+
+Snowflake follows a unique way of partitioning which is known as micro partitioning.
+
+The process of partitioning in snowflake tables is different from the partitioning that is done in the traditional data warehouses.
+
+Snowflake partitioning have all benefits which overcomes limitations of static partitioning.
+
+Each micro partition can contain the size between 50 MB to 500 MB of uncompressed data.
+
+Once this data gets loaded to the snowflake tables- the size of the snowflake table will be much lower than the actual data.
+
+Each micro partition contains a group of rows in a columnar storage - Snowflake follows columnar storage.
+
+Snowflake stores each micro partition- which contains a group of rows and by each column.
+
+Snowflake stores, metadata about all rows stored in a micro partition.
+
+Cloud services layer of snowflake architecture - known as brain of the system - stores all the metadata about all rows stored in a micro partition of each table.
+
+The metadata can be the range of values for each of the columns in the micro partition.
+
+For a table, it is possible to have like 10 micro partitions, 100 micro partitions,  for larger tables can be millions of micro partitions.
+
+The Snowflake cloud services layer will store the metadata about each micro partition.
+
+With these range of values, along with the number of distinct values contained in each column of the micro partition.
+
+It also stores additional properties used for both optimization and efficient query processing.
+
+Cloud services layer knows about each and every row that is stored in the micro partition, where it is placed in each micro partition so that once a user runs a query on snowflake data warehouse, it should directly redirect to the each micro partition, which is storing the respective data.
+
+It will not access all the micro partitions that is there for each table; rather it will just pick those micro partitions in which relevant data is stored as per the user requirements.
+
+
+===== Benefits / Advantages of Micro Partitioning ======
+
+Slide - 50
+
+
+==== Structure of Micro Partition ======
+Slide - 51
+Slide - 52 (Columnar Storage)
+
+
+==== Query Processing in Snowflake ====
+Slide - 53
+
+
+Question 1:
+
+How query processing is done in Snowflake?
+A. It is done using Cloud Service layer
+B. It is done through an external computer such as Azure Virtual Machine or AWS EC2
+C. It is done using Snowflake's Virtual Warehouses
+D. It is done using Storage Layer
+
+Ans: C 
+Query Execution is performed in the processing layer. 
+Each Virtual Warehouse is an MPP Architecture (Massively Parallel Processing) compute cluster composed of multiple compute nodes allocated by Snowflake from a Cloud Provider.
+
+
+
+Time Travel- work with history of Objects
+
+Fail-Safe - A Recovery Area
+
+Snowflake Streams - Change Data Capture (CDC)
+
+Zero-Copy Cloning
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

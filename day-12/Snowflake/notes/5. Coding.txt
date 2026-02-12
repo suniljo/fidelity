@@ -1,0 +1,184 @@
+Worksheets
+==========
+
+--> the place where we write all SQL statements while working on Snowflake
+
+To Access Worksheet
+
+Snow Sight Web UI >  Projects > Worksheets 
+
+Worksheets are nothing but the playground for you to write the SQL statements, and you can create a new worksheet
+
+
+If you have a lot of worksheets on your snowflake account, and you want to manage them effectively - For that, snowflake has provided you an option of "folders" under which you can manage your worksheets effectively.
+
++ Add New > Folder
+Folder Name : Snowflake Learning
+
++ Add New > SQL File
+
+Rename: Worksheet Name  (...)
+
+
+On a Worksheet, you typically get 3 panels.
+
+1. Database navigation pane- where you will be able to see all types of databases to which you have the access on your snowflake account.
+
+2. SQL editor - where you are going to write all your SQL scripts.
+
+3. Results in 3rd Panel
+
+
+
+==== Working on SNOWFLAKE_SAMPLE_DATA =====
+
+Under each of the database, you will get a common schema by name of INFORMATION_SCHEMA - Information schema is all about the metadata of a particular database. This is by default created as soon as you create a new database on snowflake.
+
+Data Preview
+
+
+select * from SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL.CALL_CENTER
+
+Get the fully qualified Name (... > Place name in editor)
+
+
+========== Setting up Context/ Parameters for Worksheet =======
+
+1. Switch User Roles
+2. Select Warehouse where you want to run any queries
+3. Select/ Choose Database - choose the DB name; so that not need to provide the qualified name
+
+select * from CALL_CENTER;
+
+
+---> A database is a container for information; a schema is a blueprint for organizing tables, views, and procedures. Most RDBMSs treat them as distinct, except for MySQL, where the terms are often used interchangeably
+
+
+=== Run SQL Statement ===
+
+Select User Role, Warehouse, Database and Schema (TPCDS_SF10TCL)
+
+
+1. SELECT * FROM CUSTOMER LIMIT 10;   (CTRL+ENTER) - advisable to provide the fully qualified table name
+
+2. SELECT * FROM CALL_CENTER
+3. SELECT * from SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL.CALL_CENTER
+
+4. select * from 
+"SNOWFLAKE_SAMPLE_DATA"."TPCDS_SF10TCL".CALL_CENTER
+
+DB Name. Schema Name. Table Name
+
+
+Check the statistics of query execution
+
+
+=== Worksheets Result Section ===
+
+Result Screen shows all the columns that are displayed in the output
+ 
+Snowflake provides many other statistics on the right side of the result section such as query details - how much time it took to execute the query?, how many records are fetched? what is the query id? this query id remains unique across snowflake accounts
+
+===> Click on Show More - shows some additional statistics, such as at what time it ended the query execution, how much data got scanned? through which role and which warehouse we ran this query.
+
+Also, it is showing the basic level statistics about each of the columns that are there in the output.
+
+After running the query, if I scroll down you can see different statistics and bar charts, Line charts it has created to understand the characteristics of different columns.
+
+This comes very handy when you work on the analytics.
+
+And snowflake has done a great job here to save your time and to work majorly on analytics on particular columns.
+
+Let's say if I click on a particular column, for example RECORD_START_DATE.
+
+As soon as you click on the column, it will show you specific options for that column on the right side, it is showing you the bar chart in which we can see different values like the years it is representing; if you click on any of the year, it will filter out the records for you, which comes very handy when you do some research work.
+
+And as soon as you "clear this filter", this will be removed.
+
+Let's say I want to do some filtration on the CC_CLASS.
+
+I want to see how many records are there in each class.
+
+You do not need to run any analytic queries. It is giving you by default that in the "medium" it is 21, in large it is 19 and small is 14.
+
+Let's say I want to deep dive into the records, which comes at the "large class"; so I can click on the "large" and it has filtered the records, which has a CC class = "large".
+
+So these options comes very handy when you are in roles like data engineering, business analysts or BI engineer, or a machine learning engineer.
+
+Clear this filter.
+
+On the top you get several options such as first option is the "search" button.
+
+==> try search option  - Alden (CC_MANAGER)
+This is going to filter all the records that is there for CC manager as Alden.
+
+==> try select columns
+
+==> try download the results - where you can download the results in a CSV format or TSV format.
+
+==> Next option is to hide the statistics and open the statistics again.
+
+==> And the final option is about the query history.
+  
+
+Question 1:
+
+Which value cannot be set using snowflake worksheet's context
+
+A. Virtual Warehouse
+B. Database
+C. Table
+D. Schema
+Ans: Table
+
+==> Snowflake worksheet context, you cannot set a specific table; rather, you can only reference tables that exist within the selected database and schema. This distinction is crucial for understanding how to effectively manage database environments in Snowflake.
+
+Question 2:
+
+From worksheet's results area, if we hit copy button, in which format data will be copied?
+A. TSV
+B. CSV
+C. JSON
+Ans: TSV (Tab-Separated Values)
+
+Question 3:
+
+From worksheet's results area, if we hit download button/icon, which format is not allowed to download the data?
+
+A. JSON
+B. TSV
+C. CSV
+Ans: JSON
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
